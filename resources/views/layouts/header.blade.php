@@ -16,7 +16,9 @@
             </a>
 
             <div class="dropdown-menu dropdown-menu-right">
+                @can('users.password')
                 <a class="dropdown-item has-icon" href="{{ route('sesion.index') }}"><i class="fa fa-lock"></i>Cambiar Contraseña </a>
+                @endcan
                 <a href="{{ url('logout') }}" class="dropdown-item has-icon text-danger"
                    onclick="event.preventDefault(); localStorage.clear();  document.getElementById('logout-form').submit();">
                     <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
