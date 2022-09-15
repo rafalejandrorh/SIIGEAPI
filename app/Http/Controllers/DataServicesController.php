@@ -73,7 +73,7 @@ class DataServicesController extends Controller
 
         if(!isset($tokens[0]['Query']))
         {
-            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'])
+            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == true)
             {
                 if($parametros['letracedula'] != null && $parametros['cedpersona'] != null && $parametros['ip'] != null && $parametros['mac'] != null && $parametros['ente'] != null && $parametros['usuario'] != null)
                 {
@@ -89,10 +89,12 @@ class DataServicesController extends Controller
                 }else{
                     $response = $this->servicio->errorCodeRequest($metodo, $parametros);
                 }
-            }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
+            }else if(date('Y-m-d') > $tokens[0]['expires_at'] && $token == $tokens[0]['token']){
                 $response = $this->servicio->errorCodeTokenExpire();
-            }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
-                $response = $this->servicio->errorNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == null && $tokens[0]['estatus'] == true){
+                $response = $this->servicio->errorCodeNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == false){
+                $response = $this->servicio->errorCodeInactiveToken();
             }
         }else{
             $response = $this->servicio->errorCodeToken();
@@ -118,7 +120,7 @@ class DataServicesController extends Controller
         
         if(!isset($tokens[0]['Query']))
         {
-            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'])
+            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == true)
             {
                 if($parametros['placa'] != null && $parametros['ip'] != null && $parametros['mac'] != null && $parametros['ente'] != null && $parametros['usuario'] != null)
                 {
@@ -134,10 +136,12 @@ class DataServicesController extends Controller
                 }else{
                     $response = $this->servicio->errorCodeRequest($metodo, $parametros);
                 }
-            }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
+            }else if(date('Y-m-d') > $tokens[0]['expires_at'] && $token == $tokens[0]['token']){
                 $response = $this->servicio->errorCodeTokenExpire();
-            }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
-                $response = $this->servicio->errorNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == null && $tokens[0]['estatus'] == true){
+                $response = $this->servicio->errorCodeNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == false){
+                $response = $this->servicio->errorCodeInactiveToken();
             }
         }else{
             $response = $this->servicio->errorCodeToken();
@@ -163,7 +167,7 @@ class DataServicesController extends Controller
         
         if(!isset($tokens[0]['Query']))
         {
-            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'])
+            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == true)
             {
                 if($parametros['NOSERIALPRIMARIO'] != null && $parametros['ip'] != null && $parametros['mac'] != null && $parametros['ente'] != null && $parametros['usuario'] != null)
                 {
@@ -179,10 +183,12 @@ class DataServicesController extends Controller
                 }else{
                     $response = $this->servicio->errorCodeRequest($metodo, $parametros);
                 }
-            }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
+            }else if(date('Y-m-d') > $tokens[0]['expires_at'] && $token == $tokens[0]['token']){
                 $response = $this->servicio->errorCodeTokenExpire();
-            }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
-                $response = $this->servicio->errorNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == null && $tokens[0]['estatus'] == true){
+                $response = $this->servicio->errorCodeNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == false){
+                $response = $this->servicio->errorCodeInactiveToken();
             }
         }else{
             $response = $this->servicio->errorCodeToken();
@@ -208,7 +214,7 @@ class DataServicesController extends Controller
         $tokens = $this->validarToken($token);
         if(!isset($tokens[0]['Query']))
         {
-            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'])
+            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == true)
             {
                 if($letra_cedula != null && $cedula != null && $ip != null && $mac != null && $ente != null && $usuario != null)
                 {
@@ -227,8 +233,10 @@ class DataServicesController extends Controller
                 }
             }else if(date('Y-m-d') > $tokens[0]['expires_at'] && $token == $tokens[0]['token']){
                 $response = $this->servicio->errorCodeTokenExpire();
-            }else if(date('Y-m-d') > $tokens[0]['expires_at'] && $token == $tokens[0]['token']){
-                $response = $this->servicio->errorNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == null && $tokens[0]['estatus'] == true){
+                $response = $this->servicio->errorCodeNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == false){
+                $response = $this->servicio->errorCodeInactiveToken();
             }
         }else{
             $response = $this->servicio->errorCodeToken();
@@ -253,7 +261,7 @@ class DataServicesController extends Controller
         
         if(!isset($tokens[0]['Query']))
         {
-            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'])
+            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == true)
             {
                 if($placa != null && $ip != null && $ip != null && $mac != null && $ente != null && $usuario != null)
                 {
@@ -269,10 +277,12 @@ class DataServicesController extends Controller
                 }else{
                     $response = $this->servicio->errorCodeRequest($metodo, $parametros_servicio);
                 }
-            }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
+            }else if(date('Y-m-d') > $tokens[0]['expires_at'] && $token == $tokens[0]['token']){
                 $response = $this->servicio->errorCodeTokenExpire();
-            }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
-                $response = $this->servicio->errorNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == null && $tokens[0]['estatus'] == true){
+                $response = $this->servicio->errorCodeNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == false){
+                $response = $this->servicio->errorCodeInactiveToken();
             }
         }else{
             $response = $this->servicio->errorCodeToken();
@@ -297,7 +307,7 @@ class DataServicesController extends Controller
         
         if(!isset($tokens[0]['Query']))
         {
-            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'])
+            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == true)
             {
                 if($serial != null && $ip != null && $ip != null && $mac != null && $ente != null && $usuario != null)
                 {
@@ -310,14 +320,16 @@ class DataServicesController extends Controller
                     }else{
                         $response = $this->servicio->errorCodeService($metodo);
                     }
-            }else{
-                $response = $this->servicio->errorCodeRequest($metodo, $parametros_servicio);
+                }else{
+                    $response = $this->servicio->errorCodeRequest($metodo, $parametros_servicio);
+                }
+            }else if(date('Y-m-d') > $tokens[0]['expires_at'] && $token == $tokens[0]['token']){
+                $response = $this->servicio->errorCodeTokenExpire();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == null && $tokens[0]['estatus'] == true){
+                $response = $this->servicio->errorCodeNoToken();
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == false){
+                $response = $this->servicio->errorCodeInactiveToken();
             }
-        }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
-            $response = $this->servicio->errorCodeTokenExpire();
-        }else if(date('Y-m-d') > $token[0]['expires_at'] && $token == $token[0]['token']){
-            $response = $this->servicio->errorNoToken();
-        }
         }else{
             $response = $this->servicio->errorCodeToken();
         }   

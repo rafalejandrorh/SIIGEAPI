@@ -51,6 +51,10 @@ define('ERROR_DESCRIPTION_TOKEN', 'Token Nok');
 define('ERROR_NO_TOKEN', 408);
 define('ERROR_DESCRIPTION_NO_TOKEN', 'No Token');
 
+// Nok (Token Inactivo)
+define('ERROR_CODE_INACTIVE_TOKEN', 409);
+define('ERROR_DESCRIPTION_INACTIVE_TOKEN', 'Inactive Token');
+
 // Nok (Acción no permitida en el servicio)
 define('ERROR_UNAUTHORIZED_ACTION', 500);
 define('ERROR_DESCRIPTION_UNAUTHORIZED_ACTION', 'Unauthorized');
