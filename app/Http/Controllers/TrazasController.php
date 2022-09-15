@@ -17,11 +17,9 @@ class TrazasController extends Controller
 {
     function __construct()
     {
-
         $this->middleware('can:trazas.index')->only('index', 
         'index_usuarios', 'index_dependencias', 'index_funcionarios', 'index_historial_sesion', 'index_roles',
         'show_dependencias', 'show_usuarios', 'show_funcionarios', 'show_roles');
- 
     }
     /**
      * Display a listing of the resource.

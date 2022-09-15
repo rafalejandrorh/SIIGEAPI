@@ -206,9 +206,8 @@ class TokensController extends Controller
             $estatus = true;
             $notificacion = 'Activo';
         }
-
         $tokens = Token_Organismos::find($id, ['id']);
-        $query = $tokens->update(['estatus' => $estatus]);
+        $tokens->update(['estatus' => $estatus]);
 
         // $id_user = Auth::user()->id;
         // $id_Accion = 2; //Actualización

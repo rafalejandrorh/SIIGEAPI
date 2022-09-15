@@ -11,7 +11,7 @@ class Token_Organismos extends Model
 
     protected $table = 'token_organismos';
 
-    protected $fillable = ['id','id_dependencias', 'token', 'last_used_at', 'created_at', 'expires_at', 'duracion_token'];
+    protected $fillable = ['id_dependencias', 'token', 'last_used_at', 'created_at', 'expires_at', 'duracion_token', 'estatus'];
 
     public function Dependencias()
     {

@@ -17,12 +17,11 @@ class DependenciasController extends Controller
 {
     function __construct()
     {
-
         $this->middleware('can:dependencias.index')->only('index');
         $this->middleware('can:dependencias.create')->only('create');
         $this->middleware('can:dependencias.show')->only('show');
         $this->middleware('can:dependencias.edit')->only('edit', 'update');
- 
+
     }
     /**
      * Display a listing of the resource.

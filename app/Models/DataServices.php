@@ -9,19 +9,8 @@ use nusoap_client;
 
 class DataServices extends Model
 {
-    private $wsdl;
     private $metodo;
     private $parametros = array();
-
-    public function getWsdl(){
-        return $this->wsdl;
-    }
-
-    public function setWsdl($wsdl){
-        
-        $this->wsdl = $wsdl;
-        return $this;
-    }
 
 	public function getMetodo() {
         return $this->metodo;
@@ -43,9 +32,9 @@ class DataServices extends Model
 
     function __construct()
     {
-        $this->wsdl = 'http://10.1.49.171:9763/services/consultaVehiculoSolicitado?wsdl';
-        $this->wsdl2 = 'http://10.1.49.171:9763/services/consultaPersonaSolicitada?wsdl';
-        $this->wsdl3 = 'http://10.1.49.171:9763/services/consultaArmaSolicitada?wsdl';
+        $this->vehiculoSolicitado = 'http://10.1.49.171:9763/services/consultaVehiculoSolicitado?wsdl';
+        $this->personaSolicitada = 'http://10.1.49.171:9763/services/consultaPersonaSolicitada?wsdl';
+        $this->armaSolicitada = 'http://10.1.49.171:9763/services/consultaArmaSolicitada?wsdl';
     }
 
     public function okCodeService($servicio, $datos)
@@ -108,6 +97,15 @@ class DataServices extends Model
         return $response;
     }
 
+    public function errorInvalidRequest()
+    {
+        $response = [
+            'Code' => ERROR_CODE_INVALID_REQUEST,
+            'Status' => ERROR_DESCRIPTION_INVALID_REQUEST,
+        ];
+        return $response;
+    }
+
     public function errorCodeInactiveToken()
     {
         $response = [
@@ -137,21 +135,16 @@ class DataServices extends Model
         return $response;
     }
 
-    public function VehiculoSolicitado() {
-		$cliente = new nusoap_client($this->wsdl, 'wsdl');
-		$result  = $cliente->call("$this->metodo", $this->parametros);
-		return $result;
-	}
-
-    public function PersonaSolicitada() {
-        $cliente = new nusoap_client($this->wsdl2, 'wsdl');
+    public function ServicioSolicitado() {
+        if($this->metodo == 'consultarPersonaSolicitada'){
+            $cliente = new nusoap_client($this->personaSolicitada, 'wsdl');
+        }else if($this->metodo == 'ConsultarVehiculoSolicitado'){
+            $cliente = new nusoap_client($this->vehiculoSolicitado, 'wsdl');
+        }else if($this->metodo == 'consultaArmaSolicitada'){
+            $cliente = new nusoap_client($this->armaSolicitada, 'wsdl');
+        }
         $result = $cliente->call("$this->metodo", $this->parametros); 
         return $result;
     }
 
-    public function ArmaSolicitada() {
-        $cliente = new nusoap_client($this->wsdl3, 'wsdl');
-        $result = $cliente->call("$this->metodo", $this->parametros); 
-        return $result;
-    }
 }

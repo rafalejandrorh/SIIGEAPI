@@ -20,12 +20,11 @@ class FuncionarioController extends Controller
 {
     function __construct()
     {
-
         $this->middleware('can:funcionarios.index')->only('index');
         $this->middleware('can:funcionarios.create')->only('create');
         $this->middleware('can:funcionarios.show')->only('show');
         $this->middleware('can:funcionarios.edit')->only('edit', 'update');
- 
+
     }
     /**
      * Display a listing of the resource.
