@@ -44,6 +44,51 @@
                         <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
+                                <center><a class="btn btn-primary" href="{{ route('traza_historial_tokens.index') }}"><i class='fa fa-history'> Historial de Tokens</i></a></center>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <center><a class="btn btn-primary" href="{{ route('traza_tokens.index') }}"><i class='fa fa-key'> Tokens</i></a></center>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <center><a class="btn btn-primary" href="{{ route('traza_api.index') }}"><i class='fa fa-database'> API´s</i></a></center>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
                                 <center><a class="btn btn-primary text-center" href="{{ route('traza_dependencias.index') }}"><i class='fa fa-building'> Dependencias</i></a></center>
                                 <hr>
                             </div>
@@ -89,7 +134,7 @@
                         <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
-                                <center><a class="btn btn-primary" href="{{ route('traza_roles.index') }}"><i class='fa fa-key'> Roles</i></a></center>
+                                <center><a class="btn btn-primary" href="{{ route('traza_roles.index') }}"><i class='fa fa-lock'> Roles</i></a></center>
                                 <hr>
                             </div>
                         </div>

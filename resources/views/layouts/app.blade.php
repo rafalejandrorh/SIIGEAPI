@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <title>SIIGEAPI</title>
-    <link rel="icon" href="{{ asset('public/img/Imagen1.png')}}">
+    <link rel="icon" href="{{ asset('img/Imagen1.png')}}">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 4.1.1 -->
-    <link href="{{ asset('public/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
     <!-- Ionicons -->
     {{-- <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet"> --}}
-    <link href="{{ asset('public/assets/css/@fortawesome/fontawesome-free/css/all.css') }}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ asset('public/assets/css/iziToast.min.css') }}">
-    <link href="{{ asset('public/assets/css/sweetalert.css') }}" rel="stylesheet" type="text/css"/>
-    <link href="{{ asset('public/assets/js/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet"/>
-    <link href="{{ asset('public/assets/css/select2.min.css') }}" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="{{ asset('public/css/jquery-confirm.min.css')}}" type="text/css">
+    <link href="{{ asset('assets/css/@fortawesome/fontawesome-free/css/all.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/css/iziToast.min.css') }}">
+    <link href="{{ asset('assets/css/sweetalert.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('assets/js/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('assets/css/select2.min.css') }}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{{ asset('css/jquery-confirm.min.css')}}" type="text/css">
 
 
 @yield('page_css')
 <!-- Template CSS -->
-    <link rel="stylesheet" href="{{ asset('public/web/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/web/css/components.css')}}">
+    <link rel="stylesheet" href="{{ asset('web/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('web/css/components.css')}}">
     @yield('page_css')
 
     @yield('css')
@@ -49,22 +49,22 @@
 </div>
 
 </body>
-<script src="{{ asset('public/assets/js/sweetalert2/sweetalert2.min.js') }}"></script>
-<script src="{{ asset('public/assets/js/jquery.min.js') }}"></script>
-<script src="{{ asset('public/assets/js/popper.min.js') }}"></script>
-<script src="{{ asset('public/assets/js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('public/assets/js/sweetalert.min.js') }}"></script>
-<script src="{{ asset('public/assets/js/iziToast.min.js') }}"></script>
-<script src="{{ asset('public/assets/js/select2.min.js') }}"></script>
-<script src="{{ asset('public/assets/js/jquery.nicescroll.js') }}"></script>
+<script src="{{ asset('assets/js/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/js/popper.min.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
+<script src="{{ asset('assets/js/iziToast.min.js') }}"></script>
+<script src="{{ asset('assets/js/select2.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.nicescroll.js') }}"></script>
 
 <!-- Template JS File -->
-<script src="{{ asset('public/web/js/stisla.js') }}"></script>
-<script src="{{ asset('public/web/js/scripts.js') }}"></script>
+<script src="{{ asset('web/js/stisla.js') }}"></script>
+<script src="{{ asset('web/js/scripts.js') }}"></script>
 <script src="{{ mix('assets/js/profile.js') }}"></script>
 <script src="{{ mix('assets/js/custom/custom.js') }}"></script>
-<script src="{{ asset('public/js/jquery-confirm.min.js')}}"></script>
-<script src="{{ asset('public/js/funcionesAjaxs.js')}}"></script>
+<script src="{{ asset('js/jquery-confirm.min.js')}}"></script>
+<script src="{{ asset('js/funcionesAjaxs.js')}}"></script>
 
 @include('sweetalert::alert')
 

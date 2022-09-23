@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Historial_Sesion;
 use Illuminate\Http\Request;
 use Alert;
+use App\Models\Token_Historial;
 use App\Models\Traza_Acciones;
 use App\Models\Traza_Dependencias;
 use App\Models\Traza_Funcionarios;
 use App\Models\Traza_Roles;
 use App\Models\Traza_User;
+use App\Models\Traza_Token;
+use App\Models\Traza_API;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
@@ -19,23 +22,14 @@ class TrazasController extends Controller
     {
         $this->middleware('can:trazas.index')->only('index', 
         'index_usuarios', 'index_dependencias', 'index_funcionarios', 'index_historial_sesion', 'index_roles',
-        'show_dependencias', 'show_usuarios', 'show_funcionarios', 'show_roles');
+        'show_dependencias', 'show_usuarios', 'show_funcionarios', 'show_roles', 'index_historial_tokens', 'show_historial_tokens');
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         return view('trazas.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index_dependencias(Request $request)
     {
         $request->all();
@@ -125,12 +119,6 @@ class TrazasController extends Controller
         return view('trazas.dependencias_show', compact('dependencia'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function index_usuarios(Request $request)
     {
         $request->all();
@@ -221,12 +209,6 @@ class TrazasController extends Controller
         return view('trazas.users_show', compact('user'));
     }
 
-        /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function index_funcionarios(Request $request)
     {
         $request->all();
@@ -317,12 +299,6 @@ class TrazasController extends Controller
         return view('trazas.funcionarios_show', compact('funcionario'));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function index_roles(Request $request)
     {
         $request->all();
@@ -402,12 +378,6 @@ class TrazasController extends Controller
         return view('trazas.roles_show', compact('role'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function index_historial_sesion(Request $request)
     {
         $request->all();
@@ -472,4 +442,230 @@ class TrazasController extends Controller
         return view('trazas.historial_sesion_index', compact('historial_sesion', 'user', 'accion'));
     }
 
+    public function index_historial_tokens(Request $request)
+    {
+        $request->all();
+        if(isset($request->filtro) && $request->filtro == 1)
+        {
+                if($request->fecha_inicio != null && $request->fecha_fin == null)
+                {
+                    Alert()->error('Error en el Filtrado','Atención: Al filtrar por fecha, debes colocar fecha de Inicio y Fin (Desde y Hasta)');
+                    return back();
+                }
+                $queryBuilder = Token_Historial::query();
+                if($request->fecha_inicio != null && $request->fecha_fin != null && $request->tipo_filtro != null)    
+                {
+                    $inicio = date('Y-m-d H:i:s', strtotime($request->fecha_inicio));
+                    $fin = date('Y-m-d H:i:s', strtotime($request->fecha_fin.' 23:59:59'));
+                    if($request->tipo_filtro == 'creacion'){
+                        $queryBuilder->WhereBetween('created_at', [$inicio, $fin]);
+                    }else if($request->tipo_filtro == 'expiracion'){
+                        $queryBuilder->WhereBetween('expires_at', [$inicio, $fin]);
+                    }else if($request->tipo_filtro == 'ultimo_uso'){
+                        $queryBuilder->WhereBetween('last_used_at', [$inicio, $fin]);
+                    }
+                }
+                if($request->id_usuario != null)
+                {
+                    $queryBuilder->Where('id_user', $request->id_usuario);
+                }
+                $historial_token = $queryBuilder->orderBy('updated_at', 'desc')->paginate(10);
+        }else{
+
+            if($request->tipo_busqueda == 'dependencia'){
+                $historial_token = Token_Historial::join('dependencias', 'dependencias.id', '=', 'token_historial.id_dependencias')
+                ->Where('dependencias.Nombre', 'LIKE', '%'.$request->buscador.'%')->orderBy('token_historial.created_at', 'DESC')
+                ->select('token_historial.id_dependencias', 'token_historial.token', 'token_historial.updated_at', 'token_historial.created_at', 'token_historial.expires_at',
+                'token_historial.last_used_at', 'token_historial.id')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'organismo'){
+                $historial_token = Token_Historial::join('dependencias', 'dependencias.id', '=', 'token_historial.id_dependencias')
+                ->Where('dependencias.Organismo', 'LIKE', '%'.$request->buscador.'%')->orderBy('token_historial.created_at', 'DESC')
+                ->select('token_historial.id_dependencias', 'token_historial.token', 'token_historial.updated_at', 'token_historial.created_at', 'token_historial.expires_at',
+                'token_historial.last_used_at', 'token_historial.id')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'ministerio'){
+                $historial_token = Token_Historial::join('dependencias', 'dependencias.id', '=', 'token_historial.id_dependencias')
+                ->Where('dependencias.Ministerio', 'LIKE', '%'.$request->buscador.'%')->orderBy('token_historial.created_at', 'DESC')
+                ->select('token_historial.id_dependencias', 'token_historial.token', 'token_historial.updated_at', 'token_historial.created_at', 'token_historial.expires_at',
+                'token_historial.last_used_at', 'token_historial.id')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'token'){
+                $historial_token = Token_Historial::join('dependencias', 'dependencias.id', '=', 'token_historial.id_dependencias')
+                ->Where('token_historial.token', '=', $request->buscador)->orderBy('token_historial.created_at', 'DESC')
+                ->select('token_historial.id_dependencias', 'token_historial.token', 'token_historial.updated_at', 'token_historial.created_at', 'token_historial.expires_at',
+                'token_historial.last_used_at', 'token_historial.id')->paginate(10);
+
+            }else{
+                $historial_token = Token_Historial::orderBy('token_historial.created_at', 'DESC')->paginate(10);
+            }
+
+        }
+
+        $accion = Traza_Acciones::pluck('valor', 'id')->all();
+        $user = User::pluck('users', 'id')->all();
+
+        return view('trazas.historial_tokens_index', compact('historial_token', 'user', 'accion'));
+    }
+    
+    public function show_historial_tokens(Token_Historial $historial_tokens)
+    {
+        return view('trazas.historial_tokens_show', compact('historial_tokens'));
+    }
+
+    public function index_tokens(Request $request)
+    {
+        $request->all();
+        if(isset($request->filtro) && $request->filtro == 1)
+        {
+                if($request->fecha_inicio != null && $request->fecha_fin == null)
+                {
+                    Alert()->error('Error en el Filtrado','Atención: Al filtrar por fecha, debes colocar fecha de Inicio y Fin (Desde y Hasta)');
+                    return back();
+                }
+                $queryBuilder = Traza_token::query();
+                if($request->fecha_inicio != null && $request->fecha_fin != null)    
+                {
+                    $inicio = date('Y-m-d H:i:s', strtotime($request->fecha_inicio));
+                    $fin = date('Y-m-d H:i:s', strtotime($request->fecha_fin.' 23:59:59'));
+                    $queryBuilder->WhereBetween('created_at', [$inicio, $fin]);
+                }
+                if($request->id_accion != null)
+                {
+                    $queryBuilder->Where('id_accion', $request->id_accion);
+                }
+                if($request->id_usuario != null)
+                {
+                    $queryBuilder->Where('id_user', $request->id_usuario);
+                }
+                $tokens = $queryBuilder->orderBy('created_at', 'desc')->paginate(10);
+        }else{
+
+            if($request->tipo_busqueda == 'cedula'){
+                $tokens = Traza_token::join('users', 'users.id', '=', 'trazas_token.id_user')
+                ->join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
+                ->select('trazas_token.id', 'trazas_token.id_user', 'trazas_token.id_accion', 'trazas_token.valores_modificados', 'trazas_token.created_at')
+                ->Where('persons.cedula', '=', $request->buscador)->orderBy('trazas_token.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'credencial'){
+                $tokens = Traza_token::join('users', 'users.id', '=', 'trazas_token.id_user')
+                ->join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->select('trazas_token.id', 'trazas_token.id_user', 'trazas_token.id_accion', 'trazas_token.valores_modificados', 'trazas_token.created_at')
+                ->Where('funcionarios.credencial', '=', $request->buscador)->orderBy('trazas_token.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'usuario'){
+                $tokens = Traza_token::join('users', 'users.id', '=', 'trazas_token.id_user')
+                ->select('trazas_token.id', 'trazas_token.id_user', 'trazas_token.id_accion', 'trazas_token.valores_modificados', 'trazas_token.created_at')
+                ->Where('users', 'LIKE', '%'.$request->buscador.'%')->orderBy('trazas_token.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'nombre'){
+                $tokens = Traza_token::join('users', 'users.id', '=', 'trazas_token.id_user')
+                ->join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
+                ->select('trazas_token.id', 'trazas_token.id_user', 'trazas_token.id_accion', 'trazas_token.valores_modificados', 'trazas_token.created_at')
+                ->Where('persons.primer_nombre', 'LIKE', '%'.$request->buscador.'%')
+                ->orderBy('trazas_token.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'apellido'){
+                $tokens = Traza_token::join('users', 'users.id', '=', 'trazas_token.id_user')
+                ->join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
+                ->select('trazas_token.id', 'trazas_token.id_user', 'trazas_token.id_accion', 'trazas_token.valores_modificados', 'trazas_token.created_at')
+                ->Where('persons.primer_apellido', 'LIKE', '%'.$request->buscador.'%')
+                ->orderBy('trazas_token.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'accion'){
+                $tokens = Traza_token::join('traza_acciones', 'traza_acciones.id', '=', 'trazas_token.id_accion')
+                ->select('trazas_token.id', 'trazas_token.id_user', 'trazas_token.id_accion', 'trazas_token.valores_modificados', 'trazas_token.created_at')
+                ->Where('traza_acciones.valor', 'LIKE', '%'.$request->buscador.'%')
+                ->orderBy('trazas_token.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'valores_modificados'){
+                $tokens = Traza_token::select('trazas_token.id', 'trazas_token.id_user', 'trazas_token.id_accion', 'trazas_token.valores_modificados', 'trazas_token.created_at')
+                ->Where('valores_modificados', 'LIKE', '%'.$request->buscador.'%')
+                ->orderBy('trazas_token.created_at', 'desc')->paginate(10);
+
+            }else{
+                $tokens = Traza_token::orderBy('created_at', 'desc')->paginate(10);
+            }
+
+        }
+
+        $accion = Traza_Acciones::pluck('valor', 'id')->all();
+        $user = User::pluck('users', 'id')->all();
+
+        return view('trazas.tokens_index', compact('tokens', 'user', 'accion'));
+    }
+
+    public function show_tokens(Traza_token $tokens)
+    {
+        return view('trazas.tokens_show', compact('tokens'));
+    }
+
+    public function index_api(Request $request)
+    {
+        $request->all();
+        if(isset($request->filtro) && $request->filtro == 1)
+        {
+                if($request->fecha_inicio != null && $request->fecha_fin == null)
+                {
+                    Alert()->error('Error en el Filtrado','Atención: Al filtrar por fecha, debes colocar fecha de Inicio y Fin (Desde y Hasta)');
+                    return back();
+                }
+                $queryBuilder = Traza_API::query();
+                if($request->fecha_inicio != null && $request->fecha_fin != null)    
+                {
+                    $inicio = date('Y-m-d H:i:s', strtotime($request->fecha_inicio));
+                    $fin = date('Y-m-d H:i:s', strtotime($request->fecha_fin.' 23:59:59'));
+                    $queryBuilder->WhereBetween('fecha_request', [$inicio, $fin]);
+                }
+                if($request->action != null)
+                {
+                    $queryBuilder->Where('action', $request->action);
+                }
+                if($request->usuario != null)
+                {
+                    $queryBuilder->Where('usuario', $request->usuario);
+                }
+                if($request->dependencia != null)
+                {
+                    $queryBuilder->Where('dependencia', $request->dependencia);
+                }
+                if($request->organismo != null)
+                {
+                    $queryBuilder->Where('organismo', $request->organismo);
+                }
+                if($request->ministerio != null)
+                {
+                    $queryBuilder->Where('ministerio', $request->ministerio);
+                }
+                $apis = $queryBuilder->orderBy('fecha_request', 'desc')->paginate(10);
+        }else{
+
+            if($request->tipo_busqueda == 'consulta'){
+                $apis = Traza_API::Where('request', '=', $request->buscador)->orderBy('trazas_api.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'token'){
+                $apis = Traza_API::Where('token', '=', $request->buscador)->orderBy('trazas_api.created_at', 'desc')->paginate(10);
+
+            }else{
+                $apis = Traza_API::orderBy('created_at', 'desc')->paginate(10);
+            }
+
+        }
+
+        $accion = Traza_API::pluck('action', 'action')->all();
+        $user = Traza_API::pluck('usuario', 'usuario')->all();
+        $dependencia = Traza_API::pluck('dependencia', 'dependencia')->all();
+        $organismo = Traza_API::pluck('organismo', 'organismo')->all();
+        $ministerio = Traza_API::pluck('ministerio', 'ministerio')->all();
+
+        return view('trazas.api_index', compact('apis', 'user', 'accion', 'dependencia', 'organismo', 'ministerio'));
+    }
+
+    public function show_api(Traza_API $apis)
+    {
+        return view('trazas.api_show', compact('apis'));
+    }
 }

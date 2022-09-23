@@ -11,7 +11,7 @@ class Token_Historial extends Model
 
     protected $table = 'token_historial';
 
-    protected $fillable = ['id','id_dependencias', 'token', 'created_at', 'expires_at', 'last_used_at', 'duracion_token'];
+    protected $fillable = ['id','id_dependencias', 'token', 'created_at', 'expires_at', 'last_used_at'];
 
     public function Dependencias()
     {

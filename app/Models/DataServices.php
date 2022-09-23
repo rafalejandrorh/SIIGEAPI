@@ -54,7 +54,7 @@ class DataServices extends Model
             'Code' => ERROR_CODE_SERVICE,
             'Status' => ERROR_DESCRIPTION_SERVICE,
             'Services' => $servicio,
-            'Description' => 'El Servicio  que intenta consultar no existe'
+            'Description' => 'El Servicio  que intenta consultar no existe o no se encuentra disponible'
         ];
         return $response;
     }

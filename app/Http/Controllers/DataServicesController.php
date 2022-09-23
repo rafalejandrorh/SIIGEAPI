@@ -24,18 +24,18 @@ class DataServicesController extends Controller
     private function validarToken($token) 
     {
         $validar_token = $this->tokens::Where('token','=',$token)->exists();
-        $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_organismos.id_dependencias')->Where('token', '=', $token);
+        $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')->Where('token', '=', $token);
         if($validar_token == true)
         {
             $get = $token->get();
-            $last_used = $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
+            $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
         }else{
             $get = array(
                 0 => array(
                     "Query" => 0
                 )
             );
-            $last_used = $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
+            $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
         }
         return $get;
     }
@@ -98,7 +98,7 @@ class DataServicesController extends Controller
     public function TestPersonaSolicitada()
     {
         $metodo = 'consultarPersonaSolicitada';
-        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjI2ODE5NjYsImV4cCI6MTY2MzExMzk2NiwiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.2kPvoVm_nGook34f1f-yE3vYfSZQ5ROnaidLFQgnNiI';
+        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38';
         $parametros = array(
             'letracedula' => 'V',
             'cedpersona'  => '20677724',
@@ -122,7 +122,7 @@ class DataServicesController extends Controller
     public function TestVehiculoSolicitado()
     {
         $metodo = 'ConsultarVehiculoSolicitado';
-        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjI2ODE5NjYsImV4cCI6MTY2MzExMzk2NiwiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.2kPvoVm_nGook34f1f-yE3vYfSZQ5ROnaidLFQgnNiI';
+        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38';
         $parametros = array(
             'placa' => 'KAM666',
             'ip'          => '10.3.130.124',
@@ -145,7 +145,7 @@ class DataServicesController extends Controller
     public function TestArmaSolicitada()
     {
         $metodo = 'consultaArmaSolicitada';
-        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjI2ODE5NjYsImV4cCI6MTY2MzExMzk2NiwiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.2kPvoVm_nGook34f1f-yE3vYfSZQ5ROnaidLFQgnNiI';
+        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38';
         $parametros = array(
             'NOSERIALPRIMARIO' => 'E438858',
             'ip'          => '10.3.130.124',

@@ -34,7 +34,7 @@
 @can('roles.index') 
 <li class="side-menus {{ Request::is('roles') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('roles.index') }}">
-        <i class=" fas fa-key"></i><span>Roles</span>
+        <i class=" fas fa-lock"></i><span>Roles</span>
     </a>
 </li>
 @endcan

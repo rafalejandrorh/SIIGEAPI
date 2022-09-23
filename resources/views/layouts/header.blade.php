@@ -9,7 +9,7 @@
         <li class="dropdown">
             <a href="#" data-toggle="dropdown"
                class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                <img alt="image" src="{{ asset('public/img/profile.jpg') }}"
+                <img alt="image" src="{{ asset('img/profile.jpg') }}"
                      class="rounded-circle mr-1 thumbnail-rounded user-thumbnail ">
                 <div class="d-sm-none d-lg-inline-block">
                     {{\Illuminate\Support\Facades\Auth::user()->users}}</div>

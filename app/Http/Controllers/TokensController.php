@@ -12,6 +12,7 @@ use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Firebase\JWT\JWT;
+use PhpParser\Parser\Tokens;
 
 class TokensController extends Controller
 {
@@ -93,7 +94,7 @@ class TokensController extends Controller
             $JWT = JWT::encode($token, "dfhsdfg32dfhcs4xgsrrsdry46", 'HS256');
             $fecha_expire = date('Y-m-d H:i:s', $time_expire);
             $fecha_created = date('Y-m-d H:i:s', $time);
-            
+
             Token_Organismos::create([
                 'id_dependencias' => $request->dependencia, 
                 'token' => $JWT, 
@@ -101,7 +102,22 @@ class TokensController extends Controller
                 'expires_at' => $fecha_expire,
                 'duracion_token' => $request->duracion_token,
                 'estatus' => 1
-                ]);
+            ]);
+
+            $tokens = Dependencias::Where('id', $request->dependencia)->get();
+            foreach($tokens as $token)
+            {
+                $dependencia = $token['Nombre'];
+                $organismo = $token['Organismo'];
+                $ministerio = $token['Ministerio'];
+            }
+
+            $id_user = Auth::user()->id;
+            $id_Accion = 1; //Registro
+            $trazas = Traza_Token::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+            'valores_modificados' => 'Datos del Token: Fecha de generacion:'.$fecha_created.' || Fecha de Expiración: '.$fecha_expire.
+            ' || Duración del Token(días): '.$request->duracion_token.' || Token: '.$JWT.
+            ' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio]);
 
             Alert()->success('Token Creado Satisfactoriamente','Su Token es: '.$JWT.'  ||  Su Token expirará el: '.$fecha_expire);
             return redirect()->route('tokens.index');
@@ -189,7 +205,22 @@ class TokensController extends Controller
             'last_used_at' => null
         ]);
 
-        Alert()->success('Token Creado Satisfactoriamente','Su Token es: '.$JWT.'  ||  Su Token expirará el: '.$fecha_expire);
+        $tokens = Dependencias::Where('id', $request->dependencia)->get();
+        foreach($tokens as $token)
+        {
+            $dependencia = $token['Nombre'];
+            $organismo = $token['Organismo'];
+            $ministerio = $token['Ministerio'];
+        }
+
+        $id_user = Auth::user()->id;
+        $id_Accion = 2; //Actualización
+        $trazas = Traza_Token::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+        'valores_modificados' => 'Datos del Token: Fecha de generacion:'.$fecha_created.' || Fecha de Expiración: '.$fecha_expire.
+        ' || Duración del Token(días): '.$request->duracion_token.' || Token: '.$JWT.
+        ' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio]);
+
+        Alert()->success('Token Actualizado Satisfactoriamente','Su Token es: '.$JWT.'  ||  Su Token expirará el: '.$fecha_expire);
         return redirect()->route('tokens.index');
     }
 
@@ -197,23 +228,35 @@ class TokensController extends Controller
     {
         $token = Token_Organismos::Where('id', $id)->get();
         $status = $token[0]['estatus'];
+        $id_dependencia = $token[0]['id_dependencias'];
 
         if($status == true)
         {
             $estatus = false;
             $notificacion = 'Inactivo';
+            $estatus_previo = 'Activo';
         }else{
             $estatus = true;
             $notificacion = 'Activo';
+            $estatus_previo = 'Inactivo';
         }
         $tokens = Token_Organismos::find($id, ['id']);
         $tokens->update(['estatus' => $estatus]);
 
-        // $id_user = Auth::user()->id;
-        // $id_Accion = 2; //Actualización
-        // $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        // 'valores_modificados' => 'Datos de Usuario: '.
-        // $usuario.' || '.$notificacion]);
+        $tokens = Dependencias::Where('id', $id_dependencia)->get();
+        foreach($tokens as $token)
+        {
+            $dependencia = $token['Nombre'];
+            $organismo = $token['Organismo'];
+            $ministerio = $token['Ministerio'];
+            $token = $token['token'];
+        }
+
+        $id_user = Auth::user()->id;
+        $id_Accion = 2; //Actualización
+        $trazas = Traza_Token::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+        'valores_modificados' => 'Datos del Token: Estatus previo: '.$estatus_previo.' || Estatus nuevo: '.$notificacion.
+        ' || Token: '.$token.' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio]);
 
         Alert()->success('Estatus de Token Actualizado', 'Nuevo Estatus: '.$notificacion);
         return redirect()->route('tokens.index');

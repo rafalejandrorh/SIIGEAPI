@@ -50,14 +50,6 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" name="remember" class="custom-control-input" tabindex="3"
-                               id="remember"{{ (Cookie::get('remember') !== null) ? 'checked' : '' }}>
-                        <label class="custom-control-label" for="remember">Recuérdame</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
                         Ingresar
                     </button>

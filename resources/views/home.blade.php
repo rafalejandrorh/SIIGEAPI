@@ -13,7 +13,7 @@
                             <h3 class="text-center" style="color:#000000"><b>Bienvenido al Sistema Integrado de Gestión de API´S</b></h3>
                             <div class="col-md-6 offset-md-3">
                                 <div class="login-brand">
-                                    <center><img src="{{ asset('public/img/Imagen1.png') }}" alt="logo" width="400" height="400" class="shadow-light"></center>
+                                    <center><img src="{{ asset('img/Imagen1.png') }}" alt="logo" width="400" height="400" class="shadow-light"></center>
                                 </div>
                                 @yield('content')
                             </div>
