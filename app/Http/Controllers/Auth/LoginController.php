@@ -127,12 +127,9 @@ class LoginController extends Controller
 
     public function credentials(Request $request)
     {
-        //return $request->only($this->username(), 'password');
-
         $credenciales = $request->only($this->username(), 'password');
         $credenciales = Arr::add($credenciales, 'status', 'true');
-        return $credenciales;
-        
+        return $credenciales; 
     }
 
     public function sendLoginResponse(Request $request, $id_user)
@@ -153,7 +150,6 @@ class LoginController extends Controller
 
     public function authenticated(Request $request, $user)
     {
-
         if(session('id_historial_session') != null)
         {
             $sesion = Historial_Sesion::find(session('id_historial_sesion'), ['id']);
@@ -173,7 +169,6 @@ class LoginController extends Controller
         $sesion->save();
         $id_historial_sesion = $sesion->id;
         session(['id_historial_sesion' => $id_historial_sesion]);
-
     }
 
     public function logout(Request $request)
