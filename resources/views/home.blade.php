@@ -3,7 +3,7 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h3 class="page__heading"><b>SIREPOL</b></h3>
+            <h3 class="page__heading"><b>SIIGEAPI</b></h3>
         </div>
         <div class="section-body">
             <div class="row">

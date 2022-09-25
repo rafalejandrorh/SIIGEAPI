@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('id_users');
             $table->unsignedInteger('id_questions');
             $table->string('response');
+            $table->unsignedInteger('id_padre');
             $table->timestamps();
 
             $table->foreign('id_users')->references('id')->on('users'); 

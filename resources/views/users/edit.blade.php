@@ -65,6 +65,14 @@
                             </div>
                         {!! Form::close() !!}
 
+                        {!! Form::model($user, ['method' => 'DELETE','route' => ['questions.destroy', $user->id]]) !!}
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                {!! Form::button('<i class="fa fa-trash"> Eliminar Preguntas de Seguridad</i>', ['type' => 'submit', 'class' => 'btn btn-danger']) !!}
+                            </div>
+                        </div>
+                    {!! Form::close() !!}
+
                         </div>
                         </div>
                     </div>

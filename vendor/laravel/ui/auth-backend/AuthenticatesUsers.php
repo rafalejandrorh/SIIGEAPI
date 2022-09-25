@@ -32,35 +32,35 @@ trait AuthenticatesUsers
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function login(Request $request)
-    {
-        $this->validateLogin($request);
+    // public function login(Request $request)
+    // {
+    //     $this->validateLogin($request);
 
-        // If the class is using the ThrottlesLogins trait, we can automatically throttle
-        // the login attempts for this application. We'll key this by the username and
-        // the IP address of the client making these requests into this application.
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
+    //     // If the class is using the ThrottlesLogins trait, we can automatically throttle
+    //     // the login attempts for this application. We'll key this by the username and
+    //     // the IP address of the client making these requests into this application.
+    //     if (method_exists($this, 'hasTooManyLoginAttempts') &&
+    //         $this->hasTooManyLoginAttempts($request)) {
+    //         $this->fireLockoutEvent($request);
 
-            return $this->sendLockoutResponse($request);
-        }
+    //         return $this->sendLockoutResponse($request);
+    //     }
 
-        if ($this->attemptLogin($request)) {
-            if ($request->hasSession()) {
-                $request->session()->put('auth.password_confirmed_at', time());
-            }
+    //     if ($this->attemptLogin($request)) {
+    //         if ($request->hasSession()) {
+    //             $request->session()->put('auth.password_confirmed_at', time());
+    //         }
 
-            return $this->sendLoginResponse($request);
-        }
+    //         return $this->sendLoginResponse($request);
+    //     }
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
+    //     // If the login attempt was unsuccessful we will increment the number of attempts
+    //     // to login and redirect the user back to the login form. Of course, when this
+    //     // user surpasses their maximum number of attempts they will get locked out.
+    //     $this->incrementLoginAttempts($request);
 
-        return $this->sendFailedLoginResponse($request);
-    }
+    //     return $this->sendFailedLoginResponse($request);
+    // }
 
     /**
      * Validate the user login request.
@@ -97,10 +97,10 @@ trait AuthenticatesUsers
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function credentials(Request $request)
-    {
-        //return $request->only($this->username(), 'password');
-    }
+    // protected function credentials(Request $request)
+    // {
+    //     return $request->only($this->username(), 'password');
+    // }
 
     /**
      * Send the response after the user was authenticated.
@@ -108,20 +108,20 @@ trait AuthenticatesUsers
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    protected function sendLoginResponse(Request $request)
-    {
-        $request->session()->regenerate();
+    // protected function sendLoginResponse(Request $request)
+    // {
+    //     $request->session()->regenerate();
 
-        $this->clearLoginAttempts($request);
+    //     $this->clearLoginAttempts($request);
 
-        if ($response = $this->authenticated($request, $this->guard()->user())) {
-            return $response;
-        }
+    //     if ($response = $this->authenticated($request, $this->guard()->user())) {
+    //         return $response;
+    //     }
 
-        return $request->wantsJson()
-                    ? new JsonResponse([], 204)
-                    : redirect()->intended($this->redirectPath());
-    }
+    //     return $request->wantsJson()
+    //                 ? new JsonResponse([], 204)
+    //                 : redirect()->intended($this->redirectPath());
+    // }
 
     /**
      * The user has been authenticated.
@@ -130,30 +130,27 @@ trait AuthenticatesUsers
      * @param  mixed  $user
      * @return mixed
      */
-    protected function authenticated(Request $request, $user)
-    {
-        $user->last_login = now();
-        $user->save();
-        $id_user = $user->id;
+    // protected function authenticated(Request $request, $user)
+    // {
 
-        if(session('id_historial_session') != null)
-        {
-            $sesion = Historial_Sesion::find(session('id_historial_sesion'), ['id']);
-            $sesion->logout = now();
-            $sesion->save();
-            session()->forget('id_historial_sesion');
-        };
+    //     if(session('id_historial_session') != null)
+    //     {
+    //         $sesion = Historial_Sesion::find(session('id_historial_sesion'), ['id']);
+    //         $sesion->logout = now();
+    //         $sesion->save();
+    //         session()->forget('id_historial_sesion');
+    //     };
 
-        $sesion = new Historial_Sesion();
-        $sesion->id_user = $id_user;
-        $sesion->login = now();
-        $sesion->MAC = exec('getmac');
-        //$sesion->IP = $request->ip();
-        $sesion->save();
-        $id_historial_sesion = $sesion->id;
-        session(['id_historial_sesion' => $id_historial_sesion]);
+    //     $sesion = new Historial_Sesion();
+    //     $sesion->id_user = $id_user;
+    //     $sesion->login = now();
+    //     $sesion->MAC = exec('getmac');
+    //     //$sesion->IP = $request->ip();
+    //     $sesion->save();
+    //     $id_historial_sesion = $sesion->id;
+    //     session(['id_historial_sesion' => $id_historial_sesion]);
 
-    }
+    // }
 
     /**
      * Get the failed login response instance.
@@ -175,15 +172,15 @@ trait AuthenticatesUsers
      *
      * @return string
      */
-    public function username()
-    {
-        return 'users';
-    }
+    // public function username()
+    // {
+    //     return 'users';
+    // }
 
-    public function status()
-    {
-        return 'status';
-    }
+    // public function status()
+    // {
+    //     return 'status';
+    // }
 
     /**
      * Log the user out of the application.
@@ -191,28 +188,28 @@ trait AuthenticatesUsers
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function logout(Request $request)
-    {
-        $sesion = Historial_Sesion::find(session('id_historial_sesion'), ['id']);
-        $sesion->logout = now();
-        $sesion->save();
-        session()->forget('id_historial_sesion');
+    // public function logout(Request $request)
+    // {
+    //     $sesion = Historial_Sesion::find(session('id_historial_sesion'), ['id']);
+    //     $sesion->logout = now();
+    //     $sesion->save();
+    //     session()->forget('id_historial_sesion');
         
-        $this->guard()->logout();
+    //     $this->guard()->logout();
 
-        $request->session()->invalidate();
+    //     $request->session()->invalidate();
 
-        $request->session()->regenerateToken();
+    //     $request->session()->regenerateToken();
 
-        if ($response = $this->loggedOut($request)) {
-            return $response;
-        }
+    //     if ($response = $this->loggedOut($request)) {
+    //         return $response;
+    //     }
 
-        Alert()->toast('Haz cerrado sesión en el Sistema','info');
-        return $request->wantsJson()
-            ? new JsonResponse([], 204)
-            : redirect('/');
-    }
+    //     Alert()->toast('Haz cerrado sesión en el Sistema','info');
+    //     return $request->wantsJson()
+    //         ? new JsonResponse([], 204)
+    //         : redirect('/');
+    // }
 
     /**
      * The user has logged out of the application.

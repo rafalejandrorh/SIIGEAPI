@@ -17,12 +17,11 @@
 
             <div class="dropdown-menu dropdown-menu-right">
                 @can('users.password')
-                <a class="dropdown-item has-icon" href="{{ route('sesion.index') }}"><i class="fa fa-lock"></i>Cambiar Contraseña </a>
+                <a class="dropdown-item" href="{{ route('sesion.index') }}"><i class="fa fa-lock"></i>  Ajustes</a>
                 @endcan
-                <a href="{{ url('logout') }}" class="dropdown-item has-icon text-danger"
-                   onclick="event.preventDefault(); localStorage.clear();  document.getElementById('logout-form').submit();">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                </a>
+                <a href="{{ url('logout') }}" class="dropdown-item text-danger"
+                onclick="event.preventDefault(); localStorage.clear();  document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt"></i>  Cerrar Sesión</a>
+
                 <form id="logout-form" action="{{ url('/logout/1') }}" method="POST" class="d-none">
                     {{ csrf_field() }}
                 </form>

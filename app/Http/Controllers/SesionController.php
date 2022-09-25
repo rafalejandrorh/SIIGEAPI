@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Alert;
-
+use App\Models\Questions;
+use App\Models\Users_Questions;
 
 class SesionController extends Controller
 {
@@ -21,7 +22,17 @@ class SesionController extends Controller
     {
         $data = Auth::user()->id;
         $user = User::Where('id', $data)->get();
-        return view('sesion.index', compact('user', 'data'));
+        $questions = new Questions();
+        $question1 = $questions->Where('id_padre', 10000)->pluck('question', 'id')->all();
+        $question2 = $questions->Where('id_padre', 20000)->pluck('question', 'id')->all();
+        $question3 = $questions->Where('id_padre', 30000)->pluck('question', 'id')->all();
+
+        $user_questions = new Users_Questions();
+        $padre1 = $user_questions->Where('id_padre', 10000)->Where('id_users', $data)->select('id_padre')->get();
+        $padre2 = $user_questions->Where('id_padre', 20000)->Where('id_users', $data)->select('id_padre')->get();
+        $padre3 = $user_questions->Where('id_padre', 30000)->Where('id_users', $data)->select('id_padre')->get();
+
+        return view('sesion.index', compact('user', 'data', 'question1', 'question2', 'question3', 'padre1', 'padre2', 'padre3'));
     }
 
     /**

@@ -9,7 +9,7 @@ use App\Http\Controllers\TrazasController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TokensController;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\UsersQuestionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +70,8 @@ Route::get('/traza_historial_tokens/{historial_tokens}', [App\Http\Controllers\T
 
 Route::get('/traza_api/{apis}', [App\Http\Controllers\TrazasController::class, 'show_api'])->name('traza_api.show')->middleware('auth');
 
+Route::get('logout/{id}', [LoginController::class, 'logout'])->name('questions.logout');
+
 Route::patch('/traza_dependencias/{dependencia}', [App\Http\Controllers\TrazasController::class, 'update_dependencias'])->name('traza_dependencias.update')->middleware('auth');
 
 Route::patch('/traza_funcionarios/{funcionario}', [App\Http\Controllers\TrazasController::class, 'update_roles'])->name('traza_funcionarios.update')->middleware('auth');
@@ -86,6 +88,14 @@ Route::patch('/user/{user}/status', [UserController::class, 'update_status'])->n
 
 Route::patch('/tokens/{token}/status', [TokensController::class, 'update_status'])->name('tokens.update_status')->middleware('auth');
 
+Route::patch('/questions/{user}', [UsersQuestionsController::class, 'update'])->name('questions.update');
+
+Route::post('/questions/validation', [UsersQuestionsController::class, 'validation'])->name('questions.validation')->middleware('auth');
+
 Route::post('logout/{id}', [LoginController::class, 'logout']);
+
+Route::post('/questions/create', [UsersQuestionsController::class, 'store'])->name('questions.create');
+
+Route::delete('/questions/{user}', [UsersQuestionsController::class, 'destroy'])->name('questions.destroy');
 
 Auth::routes();
