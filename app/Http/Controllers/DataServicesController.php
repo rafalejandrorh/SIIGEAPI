@@ -5,15 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\DataServices;
 use App\Models\Token_Organismos;
 use App\Models\Traza_API;
-use Illuminate\Http\Request;
-use soapClient;
 
 class DataServicesController extends Controller
 {
-    private $servicio;
-    private $token;
-    private $traza_api;
-
+    
     public function __construct(DataServices $servicio, Token_Organismos $token, Traza_API $traza_api)
     {
         $this->servicio = $servicio;
@@ -95,11 +90,13 @@ class DataServicesController extends Controller
         $this->trazas->save();
     }
 
-    public function TestPersonaSolicitada()
+    public function Test()
     {
-        $metodo = 'consultarPersonaSolicitada';
         $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38';
-        $parametros = array(
+        $metodo_persona_solicitada = 'consultarPersonaSolicitada';
+        $metodo_vehiculo_solicitado = 'ConsultarVehiculoSolicitado';
+        $metodo_arma_solicitada = 'consultaArmaSolicitada';
+        $parametros_persona = array(
             'letracedula' => 'V',
             'cedpersona'  => '20677724',
             'ip'          => '10.3.130.124',
@@ -107,61 +104,43 @@ class DataServicesController extends Controller
             'ente'        => 'CICPC',
             'usuario'     => 'V27903883',
         );
-        $request = $parametros['letracedula'].$parametros['cedpersona'];
-        $tokens = $this->validarToken($token);
-        if(!isset($parametros['letracedula']) && !isset($parametros['cedpersona']))
-        {
-            $response = $this->servicio->errorInvalidRequest();
-        }else{
-            $response = $this->validarRequest($parametros, $tokens, $metodo, $token);
-        }
-        $this->GuardarTrazas($parametros['ip'], $parametros['mac'], $parametros['usuario'], $parametros['ente'], $metodo, $response, $request, $token, $tokens[0]['Nombre'], $tokens[0]['Organismo'], $tokens[0]['Ministerio']);
-        return response()->json($response);
-    }
-
-    public function TestVehiculoSolicitado()
-    {
-        $metodo = 'ConsultarVehiculoSolicitado';
-        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38';
-        $parametros = array(
-            'placa' => 'KAM666',
+        $parametros_vehiculo = array(
+            'placa'       => 'KAM666',
             'ip'          => '10.3.130.124',
             'mac'         => 'MAC',
             'ente'        => 'CICPC',
             'usuario'     => 'V27903883',
         );
-        $request = $parametros['placa'];
-        $tokens = $this->validarToken($token);
-        if(!isset($parametros['placa']))
-        {
-            $response = $this->servicio->errorInvalidRequest();
-        }else{
-            $response = $this->validarRequest($parametros, $tokens, $metodo, $token);
-        }
-        $this->GuardarTrazas($parametros['ip'], $parametros['mac'], $parametros['usuario'], $parametros['ente'], $metodo, $response, $request, $token, $tokens[0]['Nombre'], $tokens[0]['Organismo'], $tokens[0]['Ministerio']);
-        return response()->json($response);
-    }
-
-    public function TestArmaSolicitada()
-    {
-        $metodo = 'consultaArmaSolicitada';
-        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38';
-        $parametros = array(
+        $parametros_arma = array(
             'NOSERIALPRIMARIO' => 'E438858',
             'ip'          => '10.3.130.124',
             'mac'         => 'MAC',
             'ente'        => 'CICPC',
             'usuario'     => 'V27903883',
         );
-        $request = $parametros['NOSERIALPRIMARIO'];
+
         $tokens = $this->validarToken($token);
-        if(!isset($parametros['NOSERIALPRIMARIO']))
-        {
-            $response = $this->servicio->errorInvalidRequest();
-        }else{
-            $response = $this->validarRequest($parametros, $tokens, $metodo, $token);
-        }
-        $this->GuardarTrazas($parametros['ip'], $parametros['mac'], $parametros['usuario'], $parametros['ente'], $metodo, $response, $request, $token, $tokens[0]['Nombre'], $tokens[0]['Organismo'], $tokens[0]['Ministerio']);
+        $response_persona_solicitada = $this->validarRequest($parametros_persona, $tokens, $metodo_persona_solicitada, $token);
+        $response_vehiculo_solicitado = $this->validarRequest($parametros_vehiculo, $tokens, $metodo_vehiculo_solicitado, $token);
+        $response_arma_solicitada = $this->validarRequest($parametros_arma, $tokens, $metodo_arma_solicitada, $token);
+
+        $metodo = array(
+            'Persona' => $metodo_persona_solicitada,
+            'Vehiculo' => $metodo_vehiculo_solicitado,
+            'Arma' => $metodo_arma_solicitada
+        );
+        $request = array(
+            'Persona' => $parametros_persona['letracedula'].$parametros_persona['cedpersona'],
+            'Vehiculo' => $parametros_vehiculo['placa'],
+            'Arma' => $parametros_arma['NOSERIALPRIMARIO']
+        );
+        $response = array(
+            'Persona Solicitada' => $response_persona_solicitada,
+            'Vehiculo Solicitado' => $response_vehiculo_solicitado,
+            'Arma Solicitada' => $response_arma_solicitada
+        );
+
+        $this->GuardarTrazas($parametros_persona['ip'], $parametros_persona['mac'], $parametros_persona['usuario'], $parametros_persona['ente'], $metodo, $response, $request, $token, $tokens[0]['Nombre'], $tokens[0]['Organismo'], $tokens[0]['Ministerio']);
         return response()->json($response);
     }
 
