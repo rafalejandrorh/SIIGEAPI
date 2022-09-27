@@ -22,54 +22,57 @@ class DataServicesController extends Controller
         $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')->Where('token', '=', $token);
         if($validar_token == true)
         {
-            $get = $token->get();
-            $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
-        }else{
-            $get = array(
-                0 => array(
-                    "Query" => 0
-                )
-            );
-            $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
-        }
-        return $get;
-    }
+            $tokens = $token->get();
 
-    private function validarRequest($parametros, $tokens, $metodo, $token)
-    {
-        if(!isset($tokens[0]['Query']))
-        {
-            if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == true)
+            if(date('Y-m-d') < $tokens[0]['expires_at'] && $tokens[0]['estatus'] == true)
             {
-                if($parametros['ip'] != null && $parametros['mac'] != null && $parametros['ente'] != null && $parametros['usuario'] != null)
-                {
-                    $dataservices = $this->servicio;
-                    $dataservices->setMetodo($metodo);
-                    $dataservices->setParametros($parametros);
-                    $datos = $dataservices->ServicioSolicitado();
-                    if(!empty($datos)){
-                        if(isset($datos['faultcode']))
-                        {   
-                            $response = $this->servicio->errorInvalidRequest();
-                        }else{
-                            $response = $this->servicio->okCodeService($metodo, $datos);
-                        }
-                    }else{
-                        $response = $this->servicio->errorCodeService($metodo);
-                    }
-                }else{
-                    $response = $this->servicio->errorCodeRequest($metodo, $parametros);
-                }
-            }else if(date('Y-m-d') > $tokens[0]['expires_at'] && $token == $tokens[0]['token']){
+                $response = $this->servicio->okCodeToken();
+            }else if(date('Y-m-d') > $tokens[0]['expires_at']){
                 $response = $this->servicio->errorCodeTokenExpire();
             }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == null && $tokens[0]['estatus'] == true){
                 $response = $this->servicio->errorCodeNoToken();
-            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == $tokens[0]['token'] && $tokens[0]['estatus'] == false){
+            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $tokens[0]['estatus'] == false){
                 $response = $this->servicio->errorCodeInactiveToken();
             }
+
+            $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
         }else{
+            $tokens['token'][0]['Nombre'] = null;
+            $tokens['token'][0]['Organismo'] = null;
+            $tokens['token'][0]['Ministerio'] = null;
+
             $response = $this->servicio->errorCodeToken();
+
+            $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
         }
+
+        return  array(
+            'response' => $response,
+            'token' => $tokens
+        );
+    }
+
+    private function validarRequest($parametros, $metodo)
+    {
+        if($parametros['ip'] != null && $parametros['mac'] != null && $parametros['ente'] != null && $parametros['usuario'] != null)
+        {
+            $dataservices = $this->servicio;
+            $dataservices->setMetodo($metodo);
+            $dataservices->setParametros($parametros);
+            $datos = $dataservices->ServicioSolicitado();
+            if(!empty($datos)){
+                if(isset($datos['faultcode']))
+                {   
+                    $response = $this->servicio->errorInvalidRequest();
+                }else{
+                    $response = $this->servicio->okCodeService($metodo, $datos);
+                }
+            }else{
+                $response = $this->servicio->errorCodeService($metodo);
+            }
+        }else{
+            $response = $this->servicio->errorCodeRequest($metodo, $parametros);
+        }  
         return $response;   
     }
 
@@ -80,9 +83,9 @@ class DataServicesController extends Controller
         $this->trazas->usuario = $usuario;
         $this->trazas->ente = $ente;
         $this->trazas->fecha_request = date('Y-m-d H:i:s');
-        $this->trazas->action = $metodo;
+        $this->trazas->action = print_r($metodo, true);
         $this->trazas->response = json_encode($response, true);
-        $this->trazas->request = $request;
+        $this->trazas->request = print_r($request, true);
         $this->trazas->token = $token;
         $this->trazas->dependencia = $dependencia;
         $this->trazas->organismo = $organismo;
@@ -120,9 +123,6 @@ class DataServicesController extends Controller
         );
 
         $tokens = $this->validarToken($token);
-        $response_persona_solicitada = $this->validarRequest($parametros_persona, $tokens, $metodo_persona_solicitada, $token);
-        $response_vehiculo_solicitado = $this->validarRequest($parametros_vehiculo, $tokens, $metodo_vehiculo_solicitado, $token);
-        $response_arma_solicitada = $this->validarRequest($parametros_arma, $tokens, $metodo_arma_solicitada, $token);
 
         $metodo = array(
             'Persona' => $metodo_persona_solicitada,
@@ -134,13 +134,22 @@ class DataServicesController extends Controller
             'Vehiculo' => $parametros_vehiculo['placa'],
             'Arma' => $parametros_arma['NOSERIALPRIMARIO']
         );
-        $response = array(
-            'Persona Solicitada' => $response_persona_solicitada,
-            'Vehiculo Solicitado' => $response_vehiculo_solicitado,
-            'Arma Solicitada' => $response_arma_solicitada
-        );
 
-        $this->GuardarTrazas($parametros_persona['ip'], $parametros_persona['mac'], $parametros_persona['usuario'], $parametros_persona['ente'], $metodo, $response, $request, $token, $tokens[0]['Nombre'], $tokens[0]['Organismo'], $tokens[0]['Ministerio']);
+        if($tokens['response']['Code'] == 407){
+            $response = $tokens['response'];
+        }else{
+            $response_persona_solicitada = $this->validarRequest($parametros_persona, $metodo_persona_solicitada);
+            $response_vehiculo_solicitado = $this->validarRequest($parametros_vehiculo, $metodo_vehiculo_solicitado);
+            $response_arma_solicitada = $this->validarRequest($parametros_arma, $metodo_arma_solicitada);
+
+            $response = array(
+                'Persona Solicitada' => $response_persona_solicitada,
+                'Arma Solicitada' => $response_arma_solicitada,
+                'Vehiculo Solicitado' => $response_vehiculo_solicitado
+            );
+        }
+        $this->GuardarTrazas($parametros_persona['ip'], $parametros_persona['mac'], $parametros_persona['usuario'], $parametros_persona['ente'], $metodo, $response, $request, $token, $tokens['token'][0]['Nombre'], $tokens['token'][0]['Ministerio'], $tokens['token'][0]['Organismo']);
+
         return response()->json($response);
     }
 
@@ -157,13 +166,19 @@ class DataServicesController extends Controller
         );
         $request = $letra_cedula.$cedula;
         $tokens = $this->validarToken($token);
+
         if(!isset($parametros_servicio['letracedula']) && !isset($parametros_servicio['cedpersona']))
         {
             $response = $this->servicio->errorInvalidRequest();
-        }else{
-            $response = $this->validarRequest($parametros_servicio, $tokens, $metodo, $token);
+        }else{    
+            if($tokens['response']['Code'] == 407){
+                $response = $tokens['response'];
+            }else{
+                $response = $this->validarRequest($parametros_servicio, $metodo);
+            }
         }
-        $this->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $tokens[0]['Nombre'], $tokens[0]['Ministerio'], $tokens[0]['Organismo']);
+        $this->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $tokens['token'][0]['Nombre'], $tokens['token'][0]['Ministerio'], $tokens['token'][0]['Organismo']);
+        
         return response()->json($response);
     }
 
@@ -183,9 +198,14 @@ class DataServicesController extends Controller
         {
             $response = $this->servicio->errorInvalidRequest();
         }else{
-            $response = $this->validarRequest($parametros_servicio, $tokens, $metodo, $token);
+            if($tokens['response']['Code'] == 407){
+                $response = $tokens['response'];
+            }else{
+                $response = $this->validarRequest($parametros_servicio, $metodo);
+            }
         }
-        $this->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $tokens[0]['Nombre'], $tokens[0]['Ministerio'], $tokens[0]['Organismo']);
+        $this->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $tokens['token'][0]['Nombre'], $tokens['token'][0]['Ministerio'], $tokens['token'][0]['Organismo']);
+        
         return response()->json($response);
     }
 
@@ -205,9 +225,14 @@ class DataServicesController extends Controller
         {
             $response = $this->servicio->errorInvalidRequest();
         }else{
-            $response = $this->validarRequest($parametros_servicio, $tokens, $metodo, $token);
+            if($tokens['response']['Code'] == 407){
+                $response = $tokens['response'];
+            }else{
+                $response = $this->validarRequest($parametros_servicio, $metodo);
+            }
         }
-        $this->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $tokens[0]['Nombre'], $tokens[0]['Ministerio'], $tokens[0]['Organismo']);
+        $this->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $tokens['token'][0]['Nombre'], $tokens['token'][0]['Ministerio'], $tokens['token'][0]['Organismo']);
+        
         return response()->json($response);
     }
 

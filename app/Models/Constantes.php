@@ -39,6 +39,10 @@ define('ERROR_DESCRIPTION_SERVICE', 'Service Nok');
 define('ERROR_CODE_REQUEST', 405);
 define('ERROR_DESCRIPTION_REQUEST', 'Request Nok');
 
+// Ok (Token Ok)
+define('OK_CODE_TOKEN', 202);
+define('OK_DESCRIPTION_TOKEN', 'Token Ok'); 
+
 // Nok (Error por Token Expirado)
 define('ERROR_CODE_TOKEN_EXPIRE', 406);
 define('ERROR_DESCRIPTION_TOKEN_EXPIRE', 'Token Expire');

@@ -11,6 +11,6 @@ class Users_Questions extends Model
 
     protected $table = 'users_questions';
 
-    protected $fillable = ['id_users','id_questions', 'response'];
+    protected $fillable = ['id_users','id_questions', 'response', 'id_padre'];
 
 }

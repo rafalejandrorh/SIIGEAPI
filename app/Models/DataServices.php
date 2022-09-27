@@ -70,6 +70,15 @@ class DataServices extends Model
         return $response;
     }
 
+    public function okCodeToken()
+    {
+        $response = [
+            'Code' => OK_CODE_TOKEN,
+            'Status' => OK_DESCRIPTION_TOKEN,
+        ];
+        return $response;
+    }
+
     public function errorCodeToken()
     {
         $response = [
