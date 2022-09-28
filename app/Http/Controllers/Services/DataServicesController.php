@@ -19,7 +19,8 @@ class DataServicesController extends Controller
 
     public function validarToken($token) 
     {
-        $validar_token = $this->tokens::Where('token','=',$token)->exists();
+        $validar_token = $this->tokens::Where('token','=', $token)->exists();
+
         if($validar_token == true)
         {
             $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')->Where('token', '=', $token);
