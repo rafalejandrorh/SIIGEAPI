@@ -43,7 +43,6 @@ class DataServicesController extends Controller
             $tokens[0]['Ministerio'] = null;
 
             $response = $this->errorCodeToken();
-
         }
 
         $result = array(
