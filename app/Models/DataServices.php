@@ -37,6 +37,20 @@ class DataServices extends Model
         $this->armaSolicitada = 'http://10.1.49.171:9763/services/consultaArmaSolicitada?wsdl';
     }
 
+    public function ServicioSolicitado() {
+        if($this->metodo == 'consultarPersonaSolicitada'){
+            $cliente = new nusoap_client($this->personaSolicitada, 'wsdl');
+        }else if($this->metodo == 'ConsultarVehiculoSolicitado'){
+            $cliente = new nusoap_client($this->vehiculoSolicitado, 'wsdl');
+        }else if($this->metodo == 'consultaArmaSolicitada'){
+            $cliente = new nusoap_client($this->armaSolicitada, 'wsdl');
+        }else if($this->metodo == ''){
+            $cliente = new nusoap_client($this->datospersona, 'wsdl');
+        }
+        $result = $cliente->call("$this->metodo", $this->parametros); 
+        return $result;
+    }
+
     public function okCodeService($servicio, $datos)
     {
         $response = [
@@ -142,18 +156,6 @@ class DataServices extends Model
             'Description' => 'Revisa la Documentacion para utilizar el Servicio.'
         ];
         return $response;
-    }
-
-    public function ServicioSolicitado() {
-        if($this->metodo == 'consultarPersonaSolicitada'){
-            $cliente = new nusoap_client($this->personaSolicitada, 'wsdl');
-        }else if($this->metodo == 'ConsultarVehiculoSolicitado'){
-            $cliente = new nusoap_client($this->vehiculoSolicitado, 'wsdl');
-        }else if($this->metodo == 'consultaArmaSolicitada'){
-            $cliente = new nusoap_client($this->armaSolicitada, 'wsdl');
-        }
-        $result = $cliente->call("$this->metodo", $this->parametros); 
-        return $result;
     }
 
 }

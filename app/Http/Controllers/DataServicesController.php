@@ -78,14 +78,24 @@ class DataServicesController extends Controller
 
     private function GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $dependencia, $organismo, $ministerio)
     {
+        if(is_array($metodo) == true)
+        {
+            $metodo = print_r($metodo, true);
+        }
+
+        if(is_array($request) == true)
+        {
+            $request = print_r($request, true);
+        }
+
         $this->trazas->ip = $ip;
         $this->trazas->mac = $mac;
         $this->trazas->usuario = $usuario;
         $this->trazas->ente = $ente;
         $this->trazas->fecha_request = date('Y-m-d H:i:s');
-        $this->trazas->action = print_r($metodo, true);
+        $this->trazas->action = $metodo;
         $this->trazas->response = json_encode($response, true);
-        $this->trazas->request = print_r($request, true);
+        $this->trazas->request = $request;
         $this->trazas->token = $token;
         $this->trazas->dependencia = $dependencia;
         $this->trazas->organismo = $organismo;
@@ -166,7 +176,6 @@ class DataServicesController extends Controller
         );
         $request = $letra_cedula.$cedula;
         $tokens = $this->validarToken($token);
-
         if(!isset($parametros_servicio['letracedula']) && !isset($parametros_servicio['cedpersona']))
         {
             $response = $this->servicio->errorInvalidRequest();
@@ -222,6 +231,34 @@ class DataServicesController extends Controller
         $request = $serial;
         $tokens = $this->validarToken($token);
         if(!isset($parametros_servicio['NOSERIALPRIMARIO']))
+        {
+            $response = $this->servicio->errorInvalidRequest();
+        }else{
+            if($tokens['response']['Code'] == 407){
+                $response = $tokens['response'];
+            }else{
+                $response = $this->validarRequest($parametros_servicio, $metodo);
+            }
+        }
+        $this->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $tokens['token'][0]['Nombre'], $tokens['token'][0]['Ministerio'], $tokens['token'][0]['Organismo']);
+        
+        return response()->json($response);
+    }
+
+    public function ServicioDatosPersonaSaime($letra_cedula, $cedula, $serial, $ip, $mac, $ente, $usuario, $token)
+    {
+        $metodo = '';
+        $parametros_servicio = array(
+            'letracedula'       => $letra_cedula,
+            'cedpersona'        => $cedula,
+            'ip'                => $ip,
+            'mac'               => $mac,
+            'ente'              => $ente,
+            'usuario'           => $usuario,
+        );
+        $request = $serial;
+        $tokens = $this->validarToken($token);
+        if(!isset($parametros_servicio['letracedula']) && !isset($parametros_servicio['cedpersona']))
         {
             $response = $this->servicio->errorInvalidRequest();
         }else{
