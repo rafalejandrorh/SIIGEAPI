@@ -20,9 +20,9 @@ class DataServicesController extends Controller
     public function validarToken($token) 
     {
         $validar_token = $this->tokens::Where('token','=',$token)->exists();
-        $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')->Where('token', '=', $token);
         if($validar_token == true)
         {
+            $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')->Where('token', '=', $token);
             $tokens = $token->get();
 
             if(date('Y-m-d') < $tokens[0]['expires_at'] && $tokens[0]['estatus'] == true)
@@ -38,19 +38,20 @@ class DataServicesController extends Controller
 
             $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
         }else{
-            $tokens['token'][0]['Nombre'] = null;
-            $tokens['token'][0]['Organismo'] = null;
-            $tokens['token'][0]['Ministerio'] = null;
+            $tokens[0]['Nombre'] = null;
+            $tokens[0]['Organismo'] = null;
+            $tokens[0]['Ministerio'] = null;
 
             $response = $this->errorCodeToken();
 
-            $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
         }
 
-        return  array(
+        $result = array(
             'response' => $response,
             'token' => $tokens
         );
+
+        return $result;
     }
 
     public function validarRequest($parametros, $metodo)
@@ -60,7 +61,7 @@ class DataServicesController extends Controller
             $dataservices = $this->servicio;
             $dataservices->setMetodo($metodo);
             $dataservices->setParametros($parametros);
-            $datos = $dataservices->ServicioSolicitado();
+            $datos = $dataservices->Servicios();
             if(!empty($datos)){
                 if(isset($datos['faultcode']))
                 {   

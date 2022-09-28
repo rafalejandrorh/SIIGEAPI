@@ -39,7 +39,7 @@ class DataServices extends Model
         $this->datospersona = URL_ESB1;
     }
 
-    public function ServicioSolicitado() {
+    public function Servicios() {
         if($this->metodo == VehiculoSolicitado){
             $cliente = new nusoap_client($this->personaSolicitada, WSDL);
         }else if($this->metodo == PersonaSolicitada){
