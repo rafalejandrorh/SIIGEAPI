@@ -4,7 +4,7 @@
 define('Ubicacion', 'America/Caracas');
 
 // URL de consulta a los Data Services Server
-define('URL_ESB1', 'http://10.1.49.171:9763/services/');
+define('URL_ESB1', 'http://10.3.142.23:9763/services/');
 define('URL_ESB2', 'http://10.1.49.172:9763/services/');
 
 // Consultas WSDL al WebServices (Para concatenar con las URL de consulta)
