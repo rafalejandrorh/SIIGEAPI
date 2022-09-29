@@ -20,7 +20,6 @@ class DataServicesController extends Controller
 
     public function validarToken() 
     {
-        dd($_SERVER);die;
         if(isset($_SERVER['HTTP_AUTHORIZATION']))
         {
             $ex = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
