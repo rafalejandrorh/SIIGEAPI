@@ -34,21 +34,21 @@ class DataServices extends Model
     {
         $this->vehiculoSolicitado = URL_ESB1.WSDL_VehiculoSolicitada;
         $this->personaSolicitada = URL_ESB1.WSDL_PersonaSolicitada;
+        $this->datosvehiculo = URL_ESB1.WSDL_DatosVehiculoINTT;
+        $this->datospersona = URL_ESB1.WSDL_DatosPersonaSAIME;
         $this->armaSolicitada = URL_ESB1.WSDL_ArmaSolicitada;
-        $this->datosvehiculo = URL_ESB1;
-        $this->datospersona = URL_ESB1;
     }
 
-    public function Servicios() {
-        if($this->metodo == VehiculoSolicitado){
+    public function Servicios(){
+        if($this->metodo == PersonaSolicitada){
             $cliente = new nusoap_client($this->personaSolicitada, WSDL);
-        }else if($this->metodo == PersonaSolicitada){
+        }else if($this->metodo == VehiculoSolicitado){
             $cliente = new nusoap_client($this->vehiculoSolicitado, WSDL);
         }else if($this->metodo == ArmaSolicitada){
             $cliente = new nusoap_client($this->armaSolicitada, WSDL);
-        }else if($this->metodo == ''){
+        }else if($this->metodo == DatosPersonaSAIME){
             $cliente = new nusoap_client($this->datospersona, WSDL);
-        }else if($this->metodo == ''){
+        }else if($this->metodo == DatosVehiculoINTT){
             $cliente = new nusoap_client($this->datosvehiculo, WSDL);
         }
         $result = $cliente->call("$this->metodo", $this->parametros); 

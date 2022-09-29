@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Services\DataServices;
 use App\Models\Token_Organismos;
 use App\Models\Traza_API;
+use Termwind\Components\Dd;
 
 class DataServicesController extends Controller
 {
@@ -17,38 +18,66 @@ class DataServicesController extends Controller
         $this->trazas = $traza_api;
     }
 
-    public function validarToken($token) 
+    public function validarToken() 
     {
-        $validar_token = $this->tokens::Where('token','=', $token)->exists();
-
-        if($validar_token == true)
+        dd($_SERVER);die;
+        if(isset($_SERVER['HTTP_AUTHORIZATION']))
         {
-            $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')->Where('token', '=', $token);
-            $tokens = $token->get();
-
-            if(date('Y-m-d') < $tokens[0]['expires_at'] && $tokens[0]['estatus'] == true)
+            $ex = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
+            $bearer = $ex[0];
+            if(isset($ex[1]))
             {
-                $response = $this->okCodeToken();
-            }else if(date('Y-m-d') > $tokens[0]['expires_at']){
-                $response = $this->errorCodeTokenExpire();
-            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $token == null && $tokens[0]['estatus'] == true){
-                $response = $this->errorCodeNoToken();
-            }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $tokens[0]['estatus'] == false){
-                $response = $this->errorCodeInactiveToken();
-            }
+                $token = $ex[1];
+            }else{
+                $token = null;
+            }  
+        
+            if(isset($bearer) && $bearer == 'Bearer')
+            {
+                $validar_token = $this->tokens::Where('token','=',$token)->exists();
+                if($validar_token == true)
+                {
+                    $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')->Where('token', '=', $token);
+                    $tokens = $token->get();
 
-            $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
+                    if(date('Y-m-d') < $tokens[0]['expires_at'] && $tokens[0]['estatus'] == true)
+                    {
+                        $response = $this->okCodeToken();
+                    }else if(date('Y-m-d') > $tokens[0]['expires_at']){
+                        $response = $this->errorCodeTokenExpire();
+                    }else if(date('Y-m-d') < $tokens[0]['expires_at'] && $tokens[0]['estatus'] == false){
+                        $response = $this->errorCodeInactiveToken();
+                    }
+
+                    $token->update(['last_used_at' => date('Y-m-d H:i:s')]);
+                }else{
+                    $tokens[0]['token'] = $token;
+                    $tokens[0]['Nombre'] = null;
+                    $tokens[0]['Organismo'] = null;
+                    $tokens[0]['Ministerio'] = null;
+
+                    $response = $this->errorCodeToken();
+                }
+            }else{
+                $tokens[0]['token'] = null;
+                $tokens[0]['Nombre'] = null;
+                $tokens[0]['Organismo'] = null;
+                $tokens[0]['Ministerio'] = null;
+
+                $response = $this->errorCodeNoTokenBearer();
+            }
         }else{
+            $tokens[0]['token'] = null;
             $tokens[0]['Nombre'] = null;
             $tokens[0]['Organismo'] = null;
             $tokens[0]['Ministerio'] = null;
 
-            $response = $this->errorCodeToken();
-        }
+            $response = $this->errorCodeNoToken();
+        }  
 
         $result = array(
             'response' => $response,
-            'token' => $tokens
+            'data' => $tokens
         );
 
         return $result;
@@ -156,6 +185,15 @@ class DataServicesController extends Controller
         return $response;
     }
 
+    private function errorCodeNoTokenBearer()
+    {
+        $response = [
+            'Code' => ERROR_CODE_NO_TOKEN_BEARER,
+            'Status' => ERROR_DESCRIPTION_NO_TOKEN_BEARER,
+        ];
+        return $response;
+    }
+
     private function errorCodeTokenExpire()
     {
         $response = [
@@ -165,10 +203,10 @@ class DataServicesController extends Controller
         return $response;
     }
 
-    private function errorNoToken()
+    private function errorCodeNoToken()
     {
         $response = [
-            'Code' => ERROR_NO_TOKEN,
+            'Code' => ERROR_CODE_NO_TOKEN,
             'Status' => ERROR_DESCRIPTION_NO_TOKEN,
         ];
         return $response;

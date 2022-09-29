@@ -13,29 +13,33 @@ class ArmaServicesController extends Controller
         $this->dataservices = $dataservices;
     }
 
-    public function ServicioArmaSolicitada($serial, $ip, $mac, $ente, $usuario, $token)
+    public function ServicioArmaSolicitada($serial, $ip, $mac, $ente, $usuario)
     {
         $metodo = ArmaSolicitada;
         $parametros_servicio = array(
-            'NOSERIALPRIMARIO'  => $serial,
+            'noserialprimario'    => $serial,
             'ip'                => $ip,
             'mac'               => $mac,
             'ente'              => $ente,
             'usuario'           => $usuario,
         );
         $request = $serial;
-        $tokens = $this->dataservices->validarToken($token);
-        if(isset($parametros_servicio['NOSERIALPRIMARIO']))
+        $token = $this->dataservices->validarToken();
+        if(isset($parametros_servicio['noserialprimario']))
         {
-            if($tokens['response']['Code'] == 407){
-                $response = $tokens['response'];
+            if($token['response']['Code'] == 408){
+                $response = $token['response'];
+            }else if ($token['response']['Code'] == 407){
+                $response = $token['response'];
+            }else if ($token['response']['Code'] == 405){
+                $response = $token['response'];
             }else{
                 $response = $this->dataservices->validarRequest($parametros_servicio, $metodo);
             }
         }else{
             $response = $this->dataservices->errorInvalidRequest();
         }
-        $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token, $tokens['token'][0]['Nombre'], $tokens['token'][0]['Ministerio'], $tokens['token'][0]['Organismo']);
+        $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token['data'][0]['token'], $token['data'][0]['Nombre'], $token['data'][0]['Ministerio'], $token['data'][0]['Organismo']);
         
         return response()->json($response);
     }

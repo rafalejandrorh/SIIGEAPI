@@ -18,23 +18,25 @@ use App\Http\Controllers\Services\VehiculoServicesController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::group(['auth:api'], function(){
+    Route::get('/PersonaSolicitada/{letra_cedula}/{cedula}/{ip}/{mac}/{ente}/{usuario}', [PersonaServicesController::class, 'ServicioPersonaSolicitada']);
+    // PersonaSolicitada/V/20677724/10.3.130.124/00:00:00:00/CICPC/V27903883
+    
+    Route::get('/VehiculoSolicitado/{placa}/{ip}/{mac}/{ente}/{usuario}', [VehiculoServicesController::class, 'ServicioVehiculoSolicitado']);
+    // VehiculoSolicitado/KAM666/10.3.130.124/00:00:00:00/CICPC/V27903883 
+    
+    Route::get('/ArmaSolicitada/{serialprimario}/{ip}/{mac}/{ente}/{usuario}', [ArmaServicesController::class, 'ServicioArmaSolicitada']);
+    // ArmaSolicitada/E438858/10.3.130.124/00:00:00:00/CICPC/V27903883
+    
+    Route::get('/DatosPersona/{letra_cedula}/{cedula}/{ip}/{mac}/{ente}/{usuario}', [PersonaServicesController::class, 'ServicioDatosPersonaSaime']);
+    // DatosPersona/V/20677724/10.3.130.124/00:00:00:00/CICPC/V27903883
+    
+    Route::get('/DatosVehiculo/{placa}/{ip}/{mac}/{ente}/{usuario}', [VehiculoServicesController::class, 'ServicioDatosVehiculoINTT']);
+    // DatosVehiculo/KAM666/10.3.130.124/00:00:00:00/CICPC/V27903883
+// });
+
+// Token Desarrollo de Sistemas: 
+// Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38
 
 Route::get('/Test', [TestServicesController::class, 'Test']);
 
-Route::get('/PersonaSolicitada/{letra_cedula}/{cedula}/{ip}/{mac}/{ente}/{usuario}/{token}', [PersonaServicesController::class, 'ServicioPersonaSolicitada']);
-// PersonaSolicitada/V/20677724/10.3.130.124/00:00:00:00/CICPC/V27903883/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38
-
-Route::get('/VehiculoSolicitado/{placa}/{ip}/{mac}/{ente}/{usuario}/{token}', [VehiculoServicesController::class, 'ServicioVehiculoSolicitado']);
-// VehiculoSolicitado/E438858/10.3.130.124/00:00:00:00/CICPC/V27903883/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38
-
-Route::get('/ArmaSolicitada/{serialprimario}/{ip}/{mac}/{ente}/{usuario}/{token}', [ArmaServicesController::class, 'ServicioArmaSolicitada']);
-// ArmaSolicitada/KAM666/10.3.130.124/00:00:00:00/CICPC/V27903883/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38
-
-Route::get('/DatosPersona/{letra_cedula}/{cedula}/{ip}/{mac}/{ente}/{usuario}/{token}', [PersonaServicesController::class, 'ServicioDatosPersonaSaime']);
-// DatosPersona/KAM666/10.3.130.124/00:00:00:00/CICPC/V27903883/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38
-
-Route::get('/DatosVehiculo/{placa}/{ip}/{mac}/{ente}/{usuario}/{token}', [VehiculoServicesController::class, 'ServicioDatosVehiculoINTT']);
-// DatosVehiculo/E438858/10.3.130.124/00:00:00:00/CICPC/V27903883/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NjM5MzkwNDMsImV4cCI6MTY5NTQ3NTA0MywiZGF0YSI6eyJpZF9kZXBlbmRlbmNpYSI6MX19.kWalFZBlzCI62njbG9c_Khfyn-NOkXYBhP659H-_N38
