@@ -27,7 +27,11 @@ class VehiculoServicesController extends Controller
         $token = $this->dataservices->validarToken();
         if(isset($parametros_servicio['placa']))
         {
-            if($token['response']['Code'] == 407){
+            if($token['response']['Code'] == 408){
+                $response = $token['response'];
+            }else if ($token['response']['Code'] == 407){
+                $response = $token['response'];
+            }else if ($token['response']['Code'] == 405){
                 $response = $token['response'];
             }else{
                 $response = $this->dataservices->validarRequest($parametros_servicio, $metodo);
