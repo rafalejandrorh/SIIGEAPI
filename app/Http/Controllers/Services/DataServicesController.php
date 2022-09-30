@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Services\DataServices;
 use App\Models\Token_Organismos;
 use App\Models\Traza_API;
-use Termwind\Components\Dd;
 
 class DataServicesController extends Controller
 {
