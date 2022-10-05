@@ -3,14 +3,14 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h3 class="page__heading"><b>Crear Rol</b></h3>
+            <h3 class="page__heading"><b>Editar Servicio</b></h3>
         </div>
         <div class="section-body">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                        
+                     
                         @if ($errors->any())                                                
                             <div class="alert alert-dark alert-dismissible fade show" role="alert">
                             <strong>¡Revise los campos!</strong>                        
@@ -25,35 +25,36 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12">
-                                <a href="{{ route('roles.index') }}" class="btn btn-danger"><i class="fa fa-reply"></i> Regresar</a>
+                                <a href="{{ route('servicios.index') }}" class="btn btn-danger"><i class="fa fa-reply"></i> Regresar</a>
                             </div>
                         </div>
                         <br>
-
-                        {!! Form::open(array('route' => 'roles.store','method'=>'POST')) !!}
+ 
+                        {!! Form::model($servicio, ['method' => 'PUT','route' => ['servicios.update', $servicio->id]]) !!}
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12">
+                                <h4 class="page__heading"><b>Datos del Servicio</b></h4>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-md-4">
                                 <div class="form-group">
-                                    <label for="">Nombre del Rol:</label>                                    
-                                    {!! Form::text('name', null, array('class' => 'form-control')) !!}
+                                    <label for="name">Nombre</label>
+                                    {!! Form::text('nombre', $servicio->nombre, array('class' => 'form-control', 'required' => 'required')) !!}
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-md-4">
+                                <div class="form-group">
+                                    <label for="name">Método</label>
+                                    {!! Form::text('metodo', $servicio->valor, array('class' => 'form-control', 'required' => 'required')) !!}
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
-                                    <label for="">Permisos para este Rol:</label>
-                                    <br/>
-                                    @foreach($permission as $value)
-                                        <label>{{ Form::checkbox('permission[]', $value->id, false) }}
-                                        {{ $value->description }}</label>
-                                    <br/>
-                                    @endforeach
+                                    {!! Form::button('<i class="fa fa-save"> Guardar</i>', ['type' => 'submit', 'class' => 'btn btn-primary']) !!}
                                 </div>
-                            </div> 
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                {!! Form::button('<i class="fa fa-save"> Guardar</i>', ['type' => 'submit', 'class' => 'btn btn-primary']) !!}
-                            </div>       
-                        </div>
+                            </div>
                         {!! Form::close() !!}
+
+                        </div>
                         </div>
                     </div>
                 </div>

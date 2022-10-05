@@ -98,7 +98,7 @@
                                     {!! Form::select('id_estatus', $estatus,[], array('class' => 'form-control select2', 'required' => 'required', 'placeholder'=>'Seleccione')) !!}
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-3">
+                            <div class="col-xs-12 col-sm-12 col-md-12">
                                 {!! Form::button('<i class="fa fa-save"> Guardar</i>', ['type' => 'submit', 'class' => 'btn btn-primary']) !!}
                             </div>
                         </div>

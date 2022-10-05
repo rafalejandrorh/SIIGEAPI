@@ -70,7 +70,11 @@ define('ERROR_DESCRIPTION_INVALID_REQUEST', 'Invalid Request');
 
 // Nok (Acción no permitida en el servicio)
 define('ERROR_UNAUTHORIZED_ACTION', 500);
-define('ERROR_DESCRIPTION_UNAUTHORIZED_ACTION', 'Unauthorized');
+define('ERROR_DESCRIPTION_UNAUTHORIZED_ACTION', 'Unauthorized Action');
+
+// Nok (Solicitud No Autorizada)
+define('ERROR_CODE_UNAUTHORIZED_SERVICE', 501);
+define('ERROR_DESCRIPTION_UNAUTHORIZED_SERVICE', 'Unauthorized Service');
 
 /////// Tokens ///////
 
