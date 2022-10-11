@@ -54,7 +54,7 @@
                                                 <th>Usuario</th>
                                                 <th>Acción</th>
                                                 <th>Fecha</th>
-                                                <th>Opciones</th>
+                                                <th>Acciones</th>
                                         </thead>
                                         <tbody>
                                             @foreach ($users as $user)

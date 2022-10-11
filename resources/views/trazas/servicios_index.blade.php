@@ -3,7 +3,7 @@
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h3 class="page__heading"><b>Trazas de Tokens</b></h3>
+            <h3 class="page__heading"><b>Trazas de Servicios</b></h3>
         </div>
         <div class="section-body">
             <div class="row">
@@ -18,7 +18,7 @@
                             </div>
                             <br>
 
-                            {!! Form::open(array('route' => 'traza_tokens.index','method' => 'GET')) !!}
+                            {!! Form::open(array('route' => 'traza_servicios.index','method' => 'GET')) !!}
                             <div class="row">
                                 <div class="col-xs-4 col-sm-4 col-md-4">
                                     <div class="form-group">
@@ -57,20 +57,20 @@
                                                 <th>Acciones</th>
                                         </thead>
                                         <tbody>
-                                            @foreach ($tokens as $token)
+                                            @foreach ($servicios as $servicio)
                                             <tr role="row" class="odd">
-                                                <td class="sorting_1">{{$token->user->users}}</td>
-                                                <td class="sorting_1">{{$token->acciones->valor}}</td>
-                                                <td class="sorting_1">{{ date('d/m/Y H:i:s', strtotime($token->created_at)) }}</td>
+                                                <td class="sorting_1">{{$servicio->user->users}}</td>
+                                                <td class="sorting_1">{{$servicio->acciones->valor}}</td>
+                                                <td class="sorting_1">{{ date('d/m/Y H:i:s', strtotime($servicio->created_at)) }}</td>
                                                 <td>
-                                                    <a class="btn btn-info" href="{{ route('traza_tokens.show', $token->id) }}"><i class='fa fa-eye'></i></a>
+                                                    <a class="btn btn-info" href="{{ route('traza_servicios.show', $servicio->id) }}"><i class='fa fa-eye'></i></a>
                                                 </td>
                                             </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
                                 <div class="pagination justify-content-end">
-                                    {{ $tokens->appends(request()->input())->links() }}
+                                    {{ $servicios->appends(request()->input())->links() }}
                                 </div> 
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                     <h3 class="page__heading text-white"><b>Filtro</b></h3>
                     <span aria-hidden="true" class="close text-white" data-dismiss="modal" aria-label="Close">&times;</span>
                 </div>
-            {!! Form::open(array('route' => 'traza_tokens.index','method' => 'GET')) !!}
+            {!! Form::open(array('route' => 'traza_servicios.index','method' => 'GET')) !!}
             <div class="modal-body">
 
                 <div class="row">
