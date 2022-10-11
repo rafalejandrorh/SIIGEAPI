@@ -37,7 +37,7 @@
                                         <table class="table table-striped mt-2 display dataTable table-hover">
                                             <thead>
                                                 <tr role="row">
-                                                    <th>Organismo</th>
+                                                    <th>Dependencia</th>
                                                     <th>Fecha de Generación</th>
                                                     <th>Fecha de Expiración</th>
                                                     <th>Último vez usado</th>
