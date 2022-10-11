@@ -5,18 +5,20 @@ namespace App\Http\Controllers\Services;
 use App\Http\Controllers\Controller;
 use App\Models\Dependencias_Servicios;
 use App\Models\Services\DataServices;
+use App\Models\Servicios;
 use App\Models\Token_Organismos;
 use App\Models\Traza_API;
 
 class DataServicesController extends Controller
 {
     
-    public function __construct(DataServices $servicio, Token_Organismos $token, Traza_API $traza_api, Dependencias_Servicios $dependencias_Servicios)
+    public function __construct(DataServices $servicio, Token_Organismos $token, Traza_API $traza_api, Dependencias_Servicios $dependencias_Servicios, Servicios $metodos)
     {
         $this->servicio = $servicio;
         $this->tokens = $token;
         $this->trazas = $traza_api;
         $this->dependencias_servicios = $dependencias_Servicios;
+        $this->metodos = $metodos;
     }
 
     public function validarToken() 
@@ -86,32 +88,37 @@ class DataServicesController extends Controller
     public function validarRequest($parametros, $metodo, $token)
     {
         if($token['response']['Code'] == 202){
-            $validar_metodo = $this->dependencias_servicios->join('servicios', 'servicios.id', '=', 'dependencias_servicios.id_servicios')
-            ->where('id_dependencias', $token['data']['id_dependencias'])->where('servicios.valor', $metodo)->exists();
-            
-            if($validar_metodo == true)
+            $validar_estatus_metodo = $this->metodos->where('valor', $metodo)->select('estatus')->first()->toarray();
+            if($validar_estatus_metodo['estatus'] == true)
             {
-                if($parametros['ip'] != null && $parametros['mac'] != null && $parametros['ente'] != null && $parametros['usuario'] != null)
+                $validar_metodo = $this->dependencias_servicios->join('servicios', 'servicios.id', '=', 'dependencias_servicios.id_servicios')
+                ->where('id_dependencias', $token['data']['id_dependencias'])->where('servicios.valor', $metodo)->exists();
+                if($validar_metodo == true)
                 {
-                    $dataservices = $this->servicio;
-                    $dataservices->setMetodo($metodo);
-                    $dataservices->setParametros($parametros);
-                    $datos = $dataservices->Servicios();
-                    if(!empty($datos)){
-                        if(isset($datos['faultcode']))
-                        {   
-                            $response = $this->errorInvalidRequest();
+                    if($parametros['ip'] != null && $parametros['mac'] != null && $parametros['ente'] != null && $parametros['usuario'] != null)
+                    {
+                        $dataservices = $this->servicio;
+                        $dataservices->setMetodo($metodo);
+                        $dataservices->setParametros($parametros);
+                        $datos = $dataservices->Servicios();
+                        if(!empty($datos)){
+                            if(isset($datos['faultcode']))
+                            {   
+                                $response = $this->errorInvalidRequest();
+                            }else{
+                                $response = $this->okCodeService($metodo, $datos);
+                            }
                         }else{
-                            $response = $this->okCodeService($metodo, $datos);
+                            $response = $this->errorCodeService($metodo);
                         }
                     }else{
-                        $response = $this->errorCodeService($metodo);
+                        $response = $this->errorCodeRequest($metodo, $parametros);
                     }
                 }else{
-                    $response = $this->errorCodeRequest($metodo, $parametros);
+                    $response = $this->errorCodeUnauthorizedService($metodo, $parametros);
                 }
             }else{
-                $response = $this->errorCodeUnauthorizedService($metodo, $parametros);
+                $response = $this->errorCodeInactiveService($metodo, $parametros);
             }  
         }else{
             $response = $token['response'];
@@ -262,6 +269,18 @@ class DataServicesController extends Controller
             'Status' => ERROR_DESCRIPTION_INACTIVE_TOKEN,
         ];
         return $response;  
+    }
+
+    private function errorCodeInactiveService($servicio, $data)
+    {
+        $response = [
+            'Code' => ERROR_CODE_INACTIVE_SERVICE,
+            'Status' => ERROR_DESCRIPTION_INACTIVE_SERVICE,
+            'Description' => 'El Servicio que intenta Consultar se encuentra Inactivo',
+            'Services' => $servicio,
+            'Request' => $data
+        ];
+        return $response;
     }
 
     private function okWelcome()

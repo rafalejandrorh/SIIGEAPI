@@ -68,6 +68,10 @@ define('ERROR_DESCRIPTION_INACTIVE_TOKEN', 'Inactive Token');
 define('ERROR_CODE_INVALID_REQUEST', 410);
 define('ERROR_DESCRIPTION_INVALID_REQUEST', 'Invalid Request');
 
+// Nok (Servicio Inactivo)
+define('ERROR_CODE_INACTIVE_SERVICE', 411);
+define('ERROR_DESCRIPTION_INACTIVE_SERVICE', 'Inactive Service');
+
 // Nok (Acción no permitida en el servicio)
 define('ERROR_UNAUTHORIZED_ACTION', 500);
 define('ERROR_DESCRIPTION_UNAUTHORIZED_ACTION', 'Unauthorized Action');
