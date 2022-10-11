@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BlacklistController;
 use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\SesionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\TrazasController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -30,11 +32,15 @@ Route::resource('roles', RoleController::class)->middleware('auth');
 
 Route::resource('tokens', TokensController::class)->middleware('auth');
 
+Route::resource('blacklist', BlacklistController::class)->middleware('auth');
+
 Route::resource('dependencias', DependenciasController::class)->middleware('auth');
 
 Route::resource('trazas', TrazasController::class)->middleware('auth');
 
 Route::resource('sesion', SesionController::class)->middleware('auth');
+
+Route::resource('servicios', ServiciosController::class)->middleware('auth');
 
 Route::get('/', [LoginController::class, 'index']);
 
@@ -85,6 +91,8 @@ Route::patch('/traza_tokens/{token}', [App\Http\Controllers\TrazasController::cl
 Route::patch('/reset{user}', [UserController::class, 'ResetPassword'])->name('users.reset')->middleware('auth');
 
 Route::patch('/user/{user}/status', [UserController::class, 'update_status'])->name('users.update_status')->middleware('auth');
+
+Route::patch('/servocios/{servicio}/status', [ServiciosController::class, 'update_status'])->name('servicios.update_status')->middleware('auth');
 
 Route::patch('/tokens/{token}/status', [TokensController::class, 'update_status'])->name('tokens.update_status')->middleware('auth');
 
