@@ -55,17 +55,24 @@ class TestServicesController extends Controller
             'Arma' => $parametros_arma['noserialprimario']
         );
 
-        $response_persona_solicitada = $this->dataservices->validarRequest($parametros_persona, $metodo_persona_solicitada, $token);
-        $response_vehiculo_solicitado = $this->dataservices->validarRequest($parametros_vehiculo, $metodo_vehiculo_solicitado, $token);
-        $response_arma_solicitada = $this->dataservices->validarRequest($parametros_arma, $metodo_arma_solicitada, $token);
+        if($token['response']['Code'] == 408){
+            $response = $token['response'];
+        }else if ($token['response']['Code'] == 407){
+            $response = $token['response'];
+        }else if ($token['response']['Code'] == 405){
+            $response = $token['response'];
+        }else{
+            $response_persona_solicitada = $this->dataservices->validarRequest($parametros_persona, $metodo_persona_solicitada);
+            $response_vehiculo_solicitado = $this->dataservices->validarRequest($parametros_vehiculo, $metodo_vehiculo_solicitado);
+            $response_arma_solicitada = $this->dataservices->validarRequest($parametros_arma, $metodo_arma_solicitada);
 
-        $response = array(
-            'Persona Solicitada' => $response_persona_solicitada,
-            'Arma Solicitada' => $response_arma_solicitada,
-            'Vehiculo Solicitado' => $response_vehiculo_solicitado
-        );
-
-        $this->dataservices->GuardarTrazas($parametros_persona['ip'], $parametros_persona['mac'], $parametros_persona['usuario'], $parametros_persona['ente'], $metodo, $response, $request, $token['data']['token'], $token['data']['Nombre'], $token['data']['Ministerio'], $token['data']['Organismo']);
+            $response = array(
+                'Persona Solicitada' => $response_persona_solicitada,
+                'Arma Solicitada' => $response_arma_solicitada,
+                'Vehiculo Solicitado' => $response_vehiculo_solicitado
+            );
+        }
+        $this->dataservices->GuardarTrazas($parametros_persona['ip'], $parametros_persona['mac'], $parametros_persona['usuario'], $parametros_persona['ente'], $metodo, $response, $request, $token['data'][0]['token'], $token['data'][0]['Nombre'], $token['data'][0]['Ministerio'], $token['data'][0]['Organismo']);
         unset($_SERVER['HTTP_AUTHORIZATION']);
         return response()->json($response);
     }

@@ -18,11 +18,13 @@ class TokensController extends Controller
 {
     function __construct()
     {
+
         $this->middleware('can:tokens.index')->only('index');
         $this->middleware('can:tokens.create')->only('create');
         $this->middleware('can:tokens.show')->only('show');
         $this->middleware('can:tokens.edit')->only('edit', 'update');
         $this->middleware('can:tokens.update_status')->only('update_status');
+ 
     }
     /**
      * Display a listing of the resource.
@@ -202,8 +204,8 @@ class TokensController extends Controller
             'expires_at' => $fecha_expire,
             'last_used_at' => null
         ]);
-        
-        $tokens = Dependencias::Where('id', $id)->get();
+
+        $tokens = Dependencias::Where('id', $request->dependencia)->get();
         foreach($tokens as $token)
         {
             $dependencia = $token['Nombre'];

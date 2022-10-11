@@ -21,8 +21,8 @@ class RoleController extends Controller
         $this->middleware('can:roles.show')->only('show');
         $this->middleware('can:roles.edit')->only('edit', 'update');
         $this->middleware('can:roles.destroy')->only('destroy');
-    }
 
+    }
     /**
      * Display a listing of the resource.
      *

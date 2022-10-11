@@ -54,7 +54,7 @@
                                                 <th>Usuario</th>
                                                 <th>Acción</th>
                                                 <th>Fecha</th>
-                                                <th>Acciones</th>
+                                                <th>Opciones</th>
                                         </thead>
                                         <tbody>
                                             @foreach ($tokens as $token)

@@ -27,11 +27,19 @@ class VehiculoServicesController extends Controller
         $token = $this->dataservices->validarToken();
         if(isset($parametros_servicio['placa']))
         {
-            $response = $this->dataservices->validarRequest($parametros_servicio, $metodo, $token);
+            if($token['response']['Code'] == 408){
+                $response = $token['response'];
+            }else if ($token['response']['Code'] == 407){
+                $response = $token['response'];
+            }else if ($token['response']['Code'] == 405){
+                $response = $token['response'];
+            }else{
+                $response = $this->dataservices->validarRequest($parametros_servicio, $metodo);
+            }
         }else{
             $response = $this->dataservices->errorInvalidRequest();
         }
-        $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token['data']['token'], $token['data']['Nombre'], $token['data']['Ministerio'], $token['data']['Organismo']);
+        $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token['data'][0]['token'], $token['data'][0]['Nombre'], $token['data'][0]['Ministerio'], $token['data'][0]['Organismo']);
         
         return response()->json($response);
     }
@@ -50,11 +58,19 @@ class VehiculoServicesController extends Controller
         $token = $this->dataservices->validarToken();
         if(isset($parametros_servicio['placa']))
         {
-            $response = $this->dataservices->validarRequest($parametros_servicio, $metodo, $token);
+            if($token['response']['Code'] == 408){
+                $response = $token['response'];
+            }else if ($token['response']['Code'] == 407){
+                $response = $token['response'];
+            }else if ($token['response']['Code'] == 405){
+                $response = $token['response'];
+            }else{
+                $response = $this->dataservices->validarRequest($parametros_servicio, $metodo);
+            }
         }else{
             $response = $this->dataservices->servicio->errorInvalidRequest();
         }
-        $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token['data']['token'], $token['data']['Nombre'], $token['data']['Ministerio'], $token['data']['Organismo']);
+        $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token['data'][0]['token'], $token['data'][0]['Nombre'], $token['data'][0]['Ministerio'], $token['data'][0]['Organismo']);
         
         return response()->json($response);
     }

@@ -167,6 +167,11 @@ class FuncionarioController extends Controller
 
         if($validar_persona == false){
 
+            if($request['cedula'] != null){
+                $cedulado = 37;
+            }
+
+            $person->id_tipo_documentacion = $cedulado;
             $person->letra_cedula = 'V';
             $person->cedula = $request['cedula'];
             $person->primer_nombre = $request['primer_nombre'];
@@ -212,7 +217,7 @@ class FuncionarioController extends Controller
             $request['segundo_apellido'].' || '.$genero.' || '.$request['fecha_nacimiento'].' || '.$request['credencial'].' || '.
             $jerarquia.' || '.$request['telefono'].' || '.$estatus_laboral]);
 
-            Alert()->success('Funcionario ingresado Satisfactoriamente');
+            Alert()->success('Usuario Creado Satisfactoriamente');
             return redirect()->route('funcionarios.index');
         }
 
@@ -250,7 +255,7 @@ class FuncionarioController extends Controller
             $obtener_persona[0]['primer_apellido'].' || '.$obtener_persona[0]['segundo_apellido'].' || '.$genero.' || '.$obtener_persona[0]['fecha_nacimiento'].' || '.
             $request['credencial'].' || '.$jerarquia.' || '.$request['telefono'].' || '.$estatus_laboral]);
 
-            Alert()->success('Funcionario ingresado Satisfactoriamente');
+            Alert()->success('Usuario Creado Satisfactoriamente','Atención: El ciudadano que registró no poseía registro como funcionario, se actualizó como funcionario y se asignó el Usuario');
             return redirect()->route('funcionarios.index');
         }
 
