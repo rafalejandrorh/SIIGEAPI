@@ -52,9 +52,8 @@
                                     {!! Form::button('<i class="fa fa-save"> Guardar</i>', ['type' => 'submit', 'class' => 'btn btn-primary']) !!}
                                 </div>
                             </div>
-                        {!! Form::close() !!}
-
                         </div>
+                        {!! Form::close() !!}
                         </div>
                     </div>
                 </div>

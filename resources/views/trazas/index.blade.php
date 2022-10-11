@@ -74,6 +74,21 @@
                         <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
+                                <center><a class="btn btn-primary" href="{{ route('traza_servicios.index') }}"><i class='fa fa-server'> Servicios</i></a></center>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
                                 <center><a class="btn btn-primary" href="{{ route('traza_api.index') }}"><i class='fa fa-database'> API´s</i></a></center>
                                 <hr>
                             </div>

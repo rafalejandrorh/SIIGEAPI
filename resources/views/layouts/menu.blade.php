@@ -17,13 +17,13 @@
     </a>
 </li>
 @endcan
-{{-- @can('servicios.index')  --}}
+{{--
 <li class="side-menus {{ Request::is('blacklist') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('blacklist.index') }}">
         <i class="fas fa-book"></i><span>Lista Negra (MAC´s)</span>
     </a>
 </li>
-{{-- @endcan --}}
+--}}
 @can('dependencias.index') 
 <li class="side-menus {{ Request::is('dependencias') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('dependencias.index') }}">

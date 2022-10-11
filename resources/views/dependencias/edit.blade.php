@@ -123,9 +123,6 @@
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
                                     <br/>
-                                    @php
-                                        print_r($dependencias_servicios); 
-                                    @endphp
                                     @foreach($servicios as $servicio)
                                         <label>{{ Form::checkbox('id_servicios[]', $servicio->id, in_array($servicio->nombre, $dependencias_servicios) ? true : false, array('class' => 'name')) }}
                                         {{ $servicio->nombre }}</label>

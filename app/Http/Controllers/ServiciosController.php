@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Servicios;
+use App\Models\Traza_Servicios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,6 @@ class ServiciosController extends Controller
     {
         $this->middleware('can:servicios.index')->only('index');
         $this->middleware('can:servicios.create')->only('create');
-        $this->middleware('can:servicios.show')->only('show');
         $this->middleware('can:servicios.edit')->only('edit', 'update');
         $this->middleware('can:servicios.destroy')->only('destroy');
         $this->middleware('can:servicios.update_status')->only('update_status');
@@ -31,18 +31,18 @@ class ServiciosController extends Controller
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
-            //$trazas = Traza_Token::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            //'valores_modificados' => 'Tipo de Búsqueda: '.
-            //$request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
+            $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+            'valores_modificados' => 'Tipo de Búsqueda: '.
+            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
 
         }else if($request->tipo_busqueda == 'metodo'){
-            $servicios = Servicios::Where('metodo', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $servicios = Servicios::Where('valor', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
-            //$trazas = Traza_Token::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            //'valores_modificados' => 'Tipo de Búsqueda: '.
-            //$request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
+            $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+            'valores_modificados' => 'Tipo de Búsqueda: '.
+            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
         }else{
             $servicios = Servicios::paginate(10);
         }
@@ -77,9 +77,9 @@ class ServiciosController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 1; //Registro
-        //$trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        //'valores_modificados' => 'Datos de Usuario: '.$request['users'].' || Activo || '.$rol]);
-
+        $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+        'valores_modificados' => 'Datos del Servicio: '.$request->nombre.' || Activo || '.$request->valor]);
+        
         Alert()->success('Servicio Creado Satisfactoriamente');
         return redirect()->route('servicios.index');
     }
@@ -108,8 +108,8 @@ class ServiciosController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        //$trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        //'valores_modificados' => 'Datos de Usuario: '.$request['users'].' || Activo || '.$rol]);
+        $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+        'valores_modificados' => 'Datos del Servicio: '.$request->nombre.' || '.$request->metodo]);
     
         Alert()->success('Servicios Actualizado Satisfactoriamente');
         return redirect()->route('servicios.index');
@@ -123,11 +123,11 @@ class ServiciosController extends Controller
      */
     public function destroy($id)
     {
+        $servicio = Servicios::Where('id', $id)->first()->toarray();
         $id_user = Auth::user()->id;
         $id_Accion = 3; //Eliminación
-        //$trazas = Traza_Resenna::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        //'valores_modificados' => 'Datos de Reseña: '.
-        //$fecha_resenna.' || '.$cedula.' || '.$primer_nombre.' '.$segundo_nombre.' || '.$primer_apellido.' || '.$segundo_apellido]);
+        $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+        'valores_modificados' => 'Datos del Servicio: '.$servicio['nombre'].' || '.$servicio['valor']]);
 
         $servicios = Servicios::find($id, ['id']);
         $servicios->delete();
@@ -137,11 +137,12 @@ class ServiciosController extends Controller
 
     public function update_status($id)
     {
-        $servicios = Servicios::Where('id', $id)->get();
+        $servicios = Servicios::Where('id', $id)->first()->toarray();
 
-        $id = $servicios[0]['id'];
-        $estatus = $servicios[0]['estatus'];
-        $valor = $servicios[0]['valor'];
+        $id = $servicios['id'];
+        $estatus = $servicios['estatus'];
+        $valor = $servicios['valor'];
+        $nombre = $servicios['nombre'];
 
         if($estatus == true)
         {
@@ -159,8 +160,8 @@ class ServiciosController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        //$trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        //'valores_modificados' => 'Datos de Usuario: '.$usuario.' || '.$notificacion]);
+        $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
+        'valores_modificados' => 'Datos del Servicio: '.$nombre.' || '.$valor.' || Estatus Previo: '.$estatus.' || Estatus Nuevo: '.$notificacion]);
 
         Alert()->success('Estatus de Servicio Actualizado', 'Nuevo Estatus: '.$notificacion);
         return redirect()->route('servicios.index');

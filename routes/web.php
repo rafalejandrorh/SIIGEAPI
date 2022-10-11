@@ -62,6 +62,8 @@ Route::get('/traza_historial_tokens', [App\Http\Controllers\TrazasController::cl
 
 Route::get('/traza_api', [App\Http\Controllers\TrazasController::class, 'index_api'])->name('traza_api.index')->middleware('auth');
 
+Route::get('/traza_servicios', [App\Http\Controllers\TrazasController::class, 'index_servicios'])->name('traza_servicios.index')->middleware('auth');
+
 Route::get('/traza_dependencias/{dependencia}', [App\Http\Controllers\TrazasController::class, 'show_dependencias'])->name('traza_dependencias.show')->middleware('auth');
 
 Route::get('/traza_funcionario/{funcionario}', [App\Http\Controllers\TrazasController::class, 'show_funcionarios'])->name('traza_funcionarios.show')->middleware('auth');
@@ -75,6 +77,8 @@ Route::get('/traza_tokens/{tokens}', [App\Http\Controllers\TrazasController::cla
 Route::get('/traza_historial_tokens/{historial_tokens}', [App\Http\Controllers\TrazasController::class, 'show_historial_tokens'])->name('traza_historial_tokens.show')->middleware('auth');
 
 Route::get('/traza_api/{apis}', [App\Http\Controllers\TrazasController::class, 'show_api'])->name('traza_api.show')->middleware('auth');
+
+Route::get('/traza_servicios/{servicios}', [App\Http\Controllers\TrazasController::class, 'show_servicios'])->name('traza_servicios.show')->middleware('auth');
 
 Route::get('logout/{id}', [LoginController::class, 'logout'])->name('questions.logout');
 
