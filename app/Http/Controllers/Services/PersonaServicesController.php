@@ -49,6 +49,7 @@ class PersonaServicesController extends Controller
             'ente'              => $ente,
             'usuario'           => $usuario,
         );
+
         $request = $letra_cedula.$cedula;
         $token = $this->dataservices->validarToken();
         if(isset($parametros_servicio['letracedula']) && isset($parametros_servicio['cedpersona']))
