@@ -27,7 +27,7 @@ Route::get('/VehiculoSolicitado/{placa}/{ip}/{mac}/{ente}/{usuario}', [VehiculoS
 Route::get('/ArmaSolicitada/{serialprimario}/{ip}/{mac}/{ente}/{usuario}', [ArmaServicesController::class, 'ServicioArmaSolicitada']);
 // ArmaSolicitada/E438858/10.3.130.124/00:00:00:00/CICPC/V27903883
 
-Route::get('/DatosPersona/{letra_cedula}/{cedula}/{ip}/{mac}/{ente}/{usuario}', [PersonaServicesController::class, 'ServicioDa tosPersonaSaime']);
+Route::get('/DatosPersona/{letra_cedula}/{cedula}/{ip}/{mac}/{ente}/{usuario}', [PersonaServicesController::class, 'ServicioDatosPersonaSaime']);
 // DatosPersona/V/20677724/10.3.130.124/00:00:00:00/CICPC/V27903883
 
 Route::get('/DatosVehiculo/{placa}/{ip}/{mac}/{ente}/{usuario}', [VehiculoServicesController::class, 'ServicioDatosVehiculoINTT']);

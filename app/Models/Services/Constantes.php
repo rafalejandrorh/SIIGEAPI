@@ -17,6 +17,9 @@ define('WSDL_VehiculoSolicitada', 'consultaVehiculoSolicitado?wsdl');
 define('WSDL_ArmaSolicitada', 'consultaArmaSolicitada?wsdl');
 define('WSDL_DatosPersonaSAIME', 'consultarDatosPersonaSaime?wsdl');
 define('WSDL_DatosVehiculoINTT', 'consultaPlacasVehiculos?wsdl');
+define('WSDL_DatosUsuarioInterno', 'ConsultaDatosUsuario?wsdl');
+define('WSDL_DatosUsuarioExterno', 'ConsultaDatosUsuarioExterno?wsdl');
+define('WSDL_ActualizarContrasennaUsuario', 'ActualizarContrasennaUsuario?wsdl'); //POR DEFINIR
 define('WSDL', 'wsdl');
 
 // Métodos del Servicio Disponibles para consultar
@@ -25,6 +28,10 @@ define('PersonaSolicitada', 'consultarPersonaSolicitada');
 define('ArmaSolicitada', 'consultaArmaSolicitada');
 define('DatosPersonaSAIME', 'consultarDatosPersonaSaime');
 define('DatosVehiculoINTT', 'consultaplacasvehiculosQuery');
+define('DatosUsuarioInterno', 'ConsultaDatosUsuario');
+define('DatosUsuarioExterno', 'ConsultaDatosUsuarioExterno');
+define('ActualizarContrasennaUsuario', 'actualizarContrasennaUsuario');
+
 
 /////// Responses de API ///////
 
@@ -44,41 +51,41 @@ define('ERROR_DESCRIPTION_REQUEST', 'Request Nok');
 define('OK_CODE_TOKEN', 202);
 define('OK_DESCRIPTION_TOKEN', 'Token Ok');
 
+// Nok (Solicitud Inválida)
+define('ERROR_CODE_BAD_REQUEST', 400);
+define('ERROR_DESCRIPTION_BAD_REQUEST', 'Bad Request');
+
+// Nok (Solicitud No Autorizada)
+define('ERROR_CODE_UNAUTHORIZED_SERVICE', 401);
+define('ERROR_DESCRIPTION_UNAUTHORIZED_SERVICE', 'Unauthorized Service');
+
+// Nok (Acción no permitida en el servicio)
+define('ERROR_UNAUTHORIZED_ACTION', 405);
+define('ERROR_DESCRIPTION_UNAUTHORIZED_ACTION', 'Unauthorized Action');
+
 // Nok (Error por Token sin Bearer)
-define('ERROR_CODE_NO_TOKEN_BEARER', 405);
+define('ERROR_CODE_NO_TOKEN_BEARER', 406);
 define('ERROR_DESCRIPTION_NO_TOKEN_BEARER', 'No Token Bearer');
 
 // Nok (Error por Token Expirado)
-define('ERROR_CODE_TOKEN_EXPIRE', 406);
+define('ERROR_CODE_TOKEN_EXPIRE', 407);
 define('ERROR_DESCRIPTION_TOKEN_EXPIRE', 'Token Expire');
 
 // Nok (Error por Token Incorrecto)
-define('ERROR_CODE_TOKEN', 407);
+define('ERROR_CODE_TOKEN', 408);
 define('ERROR_DESCRIPTION_TOKEN', 'Token Nok');
 
 // Nok (Error por no Colocar Token)
-define('ERROR_CODE_NO_TOKEN', 408);
+define('ERROR_CODE_NO_TOKEN', 409);
 define('ERROR_DESCRIPTION_NO_TOKEN', 'No Token');
 
 // Nok (Token Inactivo)
-define('ERROR_CODE_INACTIVE_TOKEN', 409);
+define('ERROR_CODE_INACTIVE_TOKEN', 410);
 define('ERROR_DESCRIPTION_INACTIVE_TOKEN', 'Inactive Token');
-
-// Nok (Solicitud Inválida)
-define('ERROR_CODE_INVALID_REQUEST', 410);
-define('ERROR_DESCRIPTION_INVALID_REQUEST', 'Invalid Request');
 
 // Nok (Servicio Inactivo)
 define('ERROR_CODE_INACTIVE_SERVICE', 411);
 define('ERROR_DESCRIPTION_INACTIVE_SERVICE', 'Inactive Service');
-
-// Nok (Acción no permitida en el servicio)
-define('ERROR_UNAUTHORIZED_ACTION', 500);
-define('ERROR_DESCRIPTION_UNAUTHORIZED_ACTION', 'Unauthorized Action');
-
-// Nok (Solicitud No Autorizada)
-define('ERROR_CODE_UNAUTHORIZED_SERVICE', 501);
-define('ERROR_DESCRIPTION_UNAUTHORIZED_SERVICE', 'Unauthorized Service');
 
 /////// Tokens ///////
 

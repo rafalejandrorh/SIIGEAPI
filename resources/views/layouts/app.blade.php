@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
-    <title>SIIGEAPI</title>
+    <title>@yield('title', 'SIIGEAPI')</title>
     <link rel="icon" href="{{ asset('img/Imagen1.png')}}">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 4.1.1 -->
@@ -100,36 +100,36 @@
         contadorSesion(); //aqui cargamos la funcion de inactividad
     } 
 
-function contadorSesion() {
-   timeout = setTimeout(function () {
-        $.confirm({
-            title: 'Alerta de Inactividad!',
-            content: 'La sesión esta a punto de expirar.',
-            autoClose: 'expirar|10000',//cuanto tiempo necesitamos para cerrar la sess automaticamente
-            type: 'red',
-            icon: 'fa fa-spinner fa-spin',
-            buttons: {
-                expirar: {
-                    text: 'Cerrar Sesión',
-                    btnClass: 'btn-red',
-                    action: function () {
-                        salir();
-                        
+    function contadorSesion() {
+    timeout = setTimeout(function () {
+            $.confirm({
+                title: 'Alerta de Inactividad!',
+                content: 'La sesión esta a punto de expirar.',
+                autoClose: 'expirar|10000',//cuanto tiempo necesitamos para cerrar la sess automaticamente
+                type: 'red',
+                icon: 'fa fa-spinner fa-spin',
+                buttons: {
+                    expirar: {
+                        text: 'Cerrar Sesión',
+                        btnClass: 'btn-red',
+                        action: function () {
+                            salir();
+                            
+                        }
+                    },
+                    permanecer: function () {
+                        contadorSesion(); //reinicia el conteo
+                        $.alert('La Sesión ha sido reiniciada!'); //mensaje
                     }
-                },
-                permanecer: function () {
-                    contadorSesion(); //reinicia el conteo
-                    $.alert('La Sesión ha sido reiniciada!'); //mensaje
                 }
-            }
-        });
-    }, 2100000);//2100000 son 35 minutos
-}
+            });
+        }, 2100000);//2100000 son 35 minutos
+    }
 
-function salir() {
-    $("#logout-formactivar").click();
-    //onclick="event.preventDefault(); document.getElementById('logout-form').submit();"  
-   // window.location.href = "/login"; //esta función te saca
-}
+    function salir() {
+        $("#logout-formactivar").click();
+        //onclick="event.preventDefault(); document.getElementById('logout-form').submit();"  
+    // window.location.href = "/login"; //esta función te saca
+    }
 </script>
 </html>

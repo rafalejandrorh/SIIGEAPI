@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TokensController;
 use App\Http\Controllers\UsersQuestionsController;
+use App\Http\Controllers\UsersSIIPOLController;
+use App\Http\Controllers\UsersSIIPOLControllerTest;
+use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,3 +114,15 @@ Route::post('/questions/create', [UsersQuestionsController::class, 'store'])->na
 Route::delete('/questions/{user}', [UsersQuestionsController::class, 'destroy'])->name('questions.destroy');
 
 Auth::routes();
+
+//// Contingencia SIIPOL ////
+
+Route::get('TestSIIPOL', [UsersSIIPOLControllerTest::class, 'index']);
+
+Route::get('users_siipol', [UsersSIIPOLController::class, 'index'])->name('users_siipol.index')->middleware('auth');
+
+Route::get('users_siipol/edit/{id}/{user}', [UsersSIIPOLController::class, 'edit'])->name('users_siipol.edit')->middleware('auth');
+
+Route::put('users_siipol/password/{id}', [UsersSIIPOLController::class, 'update'])->name('users_siipol.update')->middleware('auth');
+
+Route::get('/traza_users_siipol', [TrazasController::class, 'index_usuarios_siipol'])->name('traza_user_siipol.index')->middleware('auth');

@@ -34,8 +34,8 @@ class TokensController extends Controller
         $request->all();
 
         if($request->tipo_busqueda == 'dependencia'){
-            $tokens = Token_Organismos::join('dependencias', 'dependencias.id', '=', 'token_organismos.id_dependencias')
-            ->Where('dependencias.Nombre', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $tokens = Token_Organismos::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')
+            ->Where('dependencias.Nombre', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda

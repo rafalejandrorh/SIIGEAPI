@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('trazas.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -62,7 +62,7 @@
                                                 <td class="sorting_1">{{$historial->user->users}}</td>
                                                 <td class="sorting_1">{{$historial->user->funcionario->person->primer_nombre.' '.$historial->user->funcionario->person->primer_apellido}}</td>
                                                 <td class="sorting_1">{{ date('d/m/Y H:i:s', strtotime($historial->login)) }}</td>
-                                                @if ($historial->logou)
+                                                @if ($historial->logout)
                                                     <td class="sorting_1">{{ date('d/m/Y H:i:s', strtotime($historial->logout)) }}</td>
                                                 @else
                                                     <td class="sorting_1"> - </td>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('users.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -18,8 +18,6 @@
                         </div>
                         <br>
  
-                        {{-- {!! Form::open(array('method' => 'PATCH','route' => 'users.update')) !!} --}}
-                        {!! Form::model($user, ['method' => 'PATCH','route' => ['users.update', $user->id]]) !!}
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6">
                                 <div class="form-group">
@@ -30,7 +28,7 @@
                             <div class="col-xs-12 col-sm-12 col-md-3">
                                 <div class="form-group">
                                     <label for="">Roles</label>
-                                    {!! Form::select('roles', $roles, $user->role, array('class' => 'form-control', 'readonly')) !!}
+                                    {!! Form::select('roles', $roles, $user->roles, array('class' => 'form-control', 'readonly')) !!}
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-3">
@@ -60,13 +58,7 @@
                                     {!! Form::text('users', $user->users, array('class' => 'form-control', 'readonly')) !!}
                                 </div>
                             </div> 
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    {!! Form::button('<i class="fa fa-save"> Guardar</i>', ['type' => 'submit', 'class' => 'btn btn-primary']) !!}
-                                </div>
-                            </div>
                         </div>
-                        {!! Form::close() !!}
                         </div>
                     </div>
                 </div>

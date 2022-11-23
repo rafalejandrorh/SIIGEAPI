@@ -27,7 +27,7 @@ class ServiciosController extends Controller
         $request->all();
 
         if($request->tipo_busqueda == 'nombre'){
-            $servicios = Servicios::Where('nombre', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $servicios = Servicios::Where('nombre', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
@@ -36,7 +36,7 @@ class ServiciosController extends Controller
             $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
 
         }else if($request->tipo_busqueda == 'metodo'){
-            $servicios = Servicios::Where('valor', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $servicios = Servicios::Where('valor', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda

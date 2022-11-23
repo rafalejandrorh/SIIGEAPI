@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('servicios.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">

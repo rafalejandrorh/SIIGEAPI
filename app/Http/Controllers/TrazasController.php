@@ -15,6 +15,7 @@ use App\Models\Traza_User;
 use App\Models\Traza_Token;
 use App\Models\Traza_API;
 use App\Models\Traza_Servicios;
+use App\Models\Traza_User_SIIPOL;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
@@ -759,5 +760,61 @@ class TrazasController extends Controller
     public function show_servicios(Traza_Servicios $servicios)
     {
         return view('trazas.servicios_show', compact('servicios'));
+    }
+
+    public function index_usuarios_siipol(Request $request)
+    {
+        $request->all();
+        if(isset($request->filtro) && $request->filtro == 1)
+        {
+                if($request->fecha_inicio != null && $request->fecha_fin == null)
+                {
+                    Alert()->error('Error en el Filtrado','Atención: Al filtrar por fecha, debes colocar fecha de Inicio y Fin (Desde y Hasta)');
+                    return back();
+                }
+                $queryBuilder = Traza_User_SIIPOL::query();
+                if($request->fecha_inicio != null && $request->fecha_fin != null)    
+                {
+                    $inicio = date('Y-m-d H:i:s', strtotime($request->fecha_inicio));
+                    $fin = date('Y-m-d H:i:s', strtotime($request->fecha_fin.' 23:59:59'));
+                    $queryBuilder->WhereBetween('created_at', [$inicio, $fin]);
+                }
+                if($request->id_accion != null)
+                {
+                    $queryBuilder->Where('id_accion', $request->id_accion);
+                }
+                if($request->id_usuario != null)
+                {
+                    $queryBuilder->Where('id_user', $request->id_usuario);
+                }
+                $users = $queryBuilder->orderBy('created_at', 'desc')->paginate(10);
+        }else{
+
+            if($request->tipo_busqueda == 'usuario'){
+                $users = Traza_User_SIIPOL::join('users', 'users.id', '=', 'traza_users_siipol.id_user')
+                ->select('traza_users_siipol.id', 'traza_users_siipol.id_user', 'traza_users_siipol.id_accion', 'traza_users_siipol.valores_modificados', 'traza_users_siipol.created_at')
+                ->Where('users', 'LIKE', '%'.$request->buscador.'%')->orderBy('traza_users_siipol.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'accion'){
+                $users = Traza_User_SIIPOL::join('traza_acciones', 'traza_acciones.id', '=', 'traza_users_siipol.id_accion')
+                ->select('traza_users_siipol.id', 'traza_users_siipol.id_user', 'traza_users_siipol.id_accion', 'traza_users_siipol.valores_modificados', 'traza_users_siipol.created_at')
+                ->Where('traza_acciones.valor', 'LIKE', '%'.$request->buscador.'%')
+                ->orderBy('traza_users_siipol.created_at', 'desc')->paginate(10);
+
+            }else if($request->tipo_busqueda == 'valores_modificados'){
+                $users = Traza_User_SIIPOL::select('traza_users_siipol.id', 'traza_users_siipol.id_user', 'traza_users_siipol.id_accion', 'traza_users_siipol.valores_modificados', 'traza_users_siipol.created_at')
+                ->Where('valores_modificados', 'LIKE', '%'.$request->buscador.'%')
+                ->orderBy('traza_users_siipol.created_at', 'desc')->paginate(10);
+
+            }else{
+                $users = Traza_User_SIIPOL::orderBy('created_at', 'desc')->paginate(10);
+            }
+
+        }
+
+        $accion = Traza_Acciones::pluck('valor', 'id')->all();
+        $usr = User::pluck('users', 'id')->all();
+
+        return view('trazas.users_siipol_index', compact('users', 'usr', 'accion'));
     }
 }

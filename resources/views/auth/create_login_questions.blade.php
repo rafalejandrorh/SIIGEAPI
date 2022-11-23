@@ -1,7 +1,5 @@
 @extends('layouts.auth_app')
-@section('title')
-    SIREPOL
-@endsection
+@extends('auth.partials.header')
 @section('content')
     <div class="login-main-text">
         <div class="title text-center">

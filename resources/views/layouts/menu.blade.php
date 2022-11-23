@@ -52,6 +52,13 @@
     </a>
 </li>
 @endcan
+@can('users_siipol.index') 
+<li class="side-menus {{ Request::is('users_siipol') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('users_siipol.index') }}">
+        <i class="fas fa-user-plus"></i><span>Usuarios SIIPOL</span>
+    </a>
+</li>
+@endcan
 @can('trazas.index') 
 <li class="side-menus {{ Request::is('trazas') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('trazas.index') }}">

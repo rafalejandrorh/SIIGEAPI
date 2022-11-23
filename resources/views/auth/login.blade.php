@@ -1,11 +1,9 @@
 @extends('layouts.auth_app')
-@section('title')
-    SIREPOL
-@endsection
+@extends('auth.partials.header')
 @section('content')
     <div class="login-main-text">
         <div class="title text-center">
-            <h2 style="color:#000000"><b>Sistema Integrado de Gestión de API´s</b></h2>
+            <h2 style="color:#000000"><b>Sistema Integrado de Gestión de API´s y Usuarios SIIPOL</b></h2>
         </div>  
     </div>
     <div class="card card-primary">

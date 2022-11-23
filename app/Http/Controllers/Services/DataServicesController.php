@@ -39,7 +39,7 @@ class DataServicesController extends Controller
                 $validar_token = $this->tokens::Where('token','=',$token)->exists();
                 if($validar_token == true)
                 {
-                    $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_organismos.id_dependencias')->Where('token', '=', $token);
+                    $token = $this->tokens::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')->Where('token', '=', $token);
                     $tokens = $token->get();
 
                     if(date('Y-m-d H:i:s') < $tokens[0]['expires_at'] && $tokens[0]['estatus'] == true)
@@ -246,8 +246,8 @@ class DataServicesController extends Controller
     public function errorInvalidRequest()
     {
         $response = [
-            'Code' => ERROR_CODE_INVALID_REQUEST,
-            'Status' => ERROR_DESCRIPTION_INVALID_REQUEST,
+            'Code' => ERROR_CODE_BAD_REQUEST,
+            'Status' => ERROR_DESCRIPTION_BAD_REQUEST,
         ];
         return $response;
     }

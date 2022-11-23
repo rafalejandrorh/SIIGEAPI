@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('usuario');
             $table->string('fecha_request');
             $table->string('action');
-            $table->string('response', 350);
+            $table->string('response');
             $table->string('request');
-            $table->string('token', 350);
+            $table->string('token');
             $table->string('dependencia');
             $table->string('organismo');
             $table->string('ministerio');

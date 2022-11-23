@@ -35,7 +35,7 @@ class DependenciasController extends Controller
         $request->all();
 
         if($request->tipo_busqueda == 'dependencia'){
-            $dependencias = Dependencias::Where('Nombre', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $dependencias = Dependencias::Where('Nombre', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
@@ -44,7 +44,7 @@ class DependenciasController extends Controller
             $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
 
         }else if($request->tipo_busqueda == 'ministerio'){
-            $dependencias = Dependencias::Where('Ministerio', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $dependencias = Dependencias::Where('Ministerio', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
@@ -53,7 +53,7 @@ class DependenciasController extends Controller
             $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
 
         }else if($request->tipo_busqueda == 'organismo'){
-            $dependencias = Dependencias::Where('Organismo', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $dependencias = Dependencias::Where('Organismo', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda

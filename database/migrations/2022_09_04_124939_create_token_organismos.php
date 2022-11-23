@@ -16,12 +16,10 @@ return new class extends Migration
         Schema::create('token_organismos', function (Blueprint $table) {
             $table->id();
             $table->integer('id_dependencias')->unique();
-            $table->string('token', 350);
+            $table->string('token');
             $table->timestamp('last_used_at')->nullable();
             $table->timestamp('created_at');
             $table->timestamp('expires_at');
-            $table->timestamp('updated_at');
-            $table->boolean('estatus');
 
             $table->foreign('id_dependencias')->references('id')->on('dependencias'); 
         });
