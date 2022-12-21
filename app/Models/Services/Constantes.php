@@ -3,88 +3,83 @@
 //Timezone (Hora Local)
 define('Ubicacion', 'America/Caracas');
 
-// URL de consulta a los Data Services Server San Agustín
+// URL de consulta a los Data Services Server de San Agustín
 define('URL_ESB1', 'http://10.3.142.23:9763/services/');
 define('URL_ESB2', 'http://10.3.142.24:9763/services/');
 
-// URL de consulta a los Data Services Server Parque Carabobo
-// define('URL_ESB1', 'http://10.1.49.171:9763/services/');
-// define('URL_ESB2', 'http://10.1.49.172:9763/services/');
-
 // Consultas WSDL al WebServices (Para concatenar con las URL de consulta)
-define('WSDL_PersonaSolicitada', 'consultaPersonaSolicitada?wsdl');
-define('WSDL_VehiculoSolicitada', 'consultaVehiculoSolicitado?wsdl');
-define('WSDL_ArmaSolicitada', 'consultaArmaSolicitada?wsdl');
-define('WSDL_DatosPersonaSAIME', 'consultarDatosPersonaSaime?wsdl');
-define('WSDL_DatosVehiculoINTT', 'consultaPlacasVehiculos?wsdl');
-define('WSDL_DatosUsuarioInterno', 'ConsultaDatosUsuario?wsdl');
-define('WSDL_DatosUsuarioExterno', 'ConsultaDatosUsuarioExterno?wsdl');
-define('WSDL_ActualizarContrasennaUsuario', 'ActualizarContrasennaUsuario?wsdl'); //POR DEFINIR
+define('WSDL_consultarPersonaSolicitada', 'consultaPersonaSolicitada?wsdl');
+define('WSDL_consultarVehiculoSolicitado', 'consultaVehiculoSolicitado?wsdl');
+define('WSDL_consultarArmaSolicitada', 'consultaArmaSolicitada?wsdl');
+define('WSDL_consultarDatosPersonaSAIME', 'consultarDatosPersonaSaime?wsdl');
+define('WSDL_consultarDatosVehiculoINTT', 'consultaPlacasVehiculos?wsdl');
+define('WSDL_consultarDatosUsuarioInterno', 'ConsultaDatosUsuario?wsdl');
+define('WSDL_consultarDatosUsuarioExterno', 'ConsultaDatosUsuarioExterno?wsdl');
+define('WSDL_actualizarContrasennaUsuario', 'ActualizarContrasennaUsuario?wsdl'); //POR DEFINIR
 define('WSDL', 'wsdl');
 
 // Métodos del Servicio Disponibles para consultar
-define('VehiculoSolicitado', 'ConsultarVehiculoSolicitado');
-define('PersonaSolicitada', 'consultarPersonaSolicitada');
-define('ArmaSolicitada', 'consultaArmaSolicitada');
-define('DatosPersonaSAIME', 'consultarDatosPersonaSaime');
-define('DatosVehiculoINTT', 'consultaplacasvehiculosQuery');
-define('DatosUsuarioInterno', 'ConsultaDatosUsuario');
-define('DatosUsuarioExterno', 'ConsultaDatosUsuarioExterno');
-define('ActualizarContrasennaUsuario', 'actualizarContrasennaUsuario');
-
+define('consultarVehiculoSolicitado', 'ConsultarVehiculoSolicitado');
+define('consultarPersonaSolicitada', 'consultarPersonaSolicitada');
+define('consultarArmaSolicitada', 'consultaArmaSolicitada');
+define('consultarDatosPersonaSAIME', 'consultarDatosPersonaSaime');
+define('consultarDatosVehiculoINTT', 'consultaplacasvehiculosQuery');
+define('consultarDatosUsuarioInterno', 'ConsultaDatosUsuario');
+define('consultarDatosUsuarioExterno', 'ConsultaDatosUsuarioExterno');
+define('actualizarContrasennaUsuario', 'actualizarContrasennaUsuario');
 
 /////// Responses de API ///////
 
 // Ok (Se realiza la consulta)
-define('OK_CODE_SERVICE', 200);
+define('OK_CODE_SERVICE', '500');
 define('OK_DESCRIPTION_SERVICE', 'Service Ok'); 
 
-// Nok (Error en el servicio consultado)
-define('ERROR_CODE_SERVICE', 404);
-define('ERROR_DESCRIPTION_SERVICE', 'Service Nok');
-
-// Nok (Error en el servicio consultado)
-define('ERROR_CODE_REQUEST', 405);
-define('ERROR_DESCRIPTION_REQUEST', 'Request Nok');
-
 // Ok (Token Ok)
-define('OK_CODE_TOKEN', 202);
+define('OK_CODE_TOKEN', '502');
 define('OK_DESCRIPTION_TOKEN', 'Token Ok');
 
-// Nok (Solicitud Inválida)
-define('ERROR_CODE_BAD_REQUEST', 400);
+// Nok (Error en la solicitud enviada)
+define('ERROR_CODE_BAD_REQUEST', '600');
 define('ERROR_DESCRIPTION_BAD_REQUEST', 'Bad Request');
 
 // Nok (Solicitud No Autorizada)
-define('ERROR_CODE_UNAUTHORIZED_SERVICE', 401);
+define('ERROR_CODE_UNAUTHORIZED_SERVICE', '601');
 define('ERROR_DESCRIPTION_UNAUTHORIZED_SERVICE', 'Unauthorized Service');
 
+// Nok (Error en la solicitud al servicio)
+define('ERROR_CODE_REQUEST', '602');
+define('ERROR_DESCRIPTION_REQUEST', 'Request Nok');
+
+// Nok (Error en el servicio consultado)
+define('ERROR_CODE_SERVICE', '603');
+define('ERROR_DESCRIPTION_SERVICE', 'Service Nok');
+
 // Nok (Acción no permitida en el servicio)
-define('ERROR_UNAUTHORIZED_ACTION', 405);
+define('ERROR_UNAUTHORIZED_ACTION', '604');
 define('ERROR_DESCRIPTION_UNAUTHORIZED_ACTION', 'Unauthorized Action');
 
 // Nok (Error por Token sin Bearer)
-define('ERROR_CODE_NO_TOKEN_BEARER', 406);
+define('ERROR_CODE_NO_TOKEN_BEARER', '605');
 define('ERROR_DESCRIPTION_NO_TOKEN_BEARER', 'No Token Bearer');
 
 // Nok (Error por Token Expirado)
-define('ERROR_CODE_TOKEN_EXPIRE', 407);
+define('ERROR_CODE_TOKEN_EXPIRE', '606');
 define('ERROR_DESCRIPTION_TOKEN_EXPIRE', 'Token Expire');
 
 // Nok (Error por Token Incorrecto)
-define('ERROR_CODE_TOKEN', 408);
+define('ERROR_CODE_TOKEN', '607');
 define('ERROR_DESCRIPTION_TOKEN', 'Token Nok');
 
 // Nok (Error por no Colocar Token)
-define('ERROR_CODE_NO_TOKEN', 409);
+define('ERROR_CODE_NO_TOKEN', '608');
 define('ERROR_DESCRIPTION_NO_TOKEN', 'No Token');
 
-// Nok (Token Inactivo)
-define('ERROR_CODE_INACTIVE_TOKEN', 410);
+// Nok (Error por Token Inactivo)
+define('ERROR_CODE_INACTIVE_TOKEN', '609');
 define('ERROR_DESCRIPTION_INACTIVE_TOKEN', 'Inactive Token');
 
 // Nok (Servicio Inactivo)
-define('ERROR_CODE_INACTIVE_SERVICE', 411);
+define('ERROR_CODE_INACTIVE_SERVICE', '610');
 define('ERROR_DESCRIPTION_INACTIVE_SERVICE', 'Inactive Service');
 
 /////// Tokens ///////

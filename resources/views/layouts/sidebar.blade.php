@@ -8,7 +8,9 @@
             <img class="navbar-brand-full" src="{{ asset('img/Imagen1.png') }}" width="45px" alt="Logo CICPC"/>
         </a>
     </div>
-    <ul class="sidebar-menu">
-        @include('layouts.menu')
-    </ul>
+    @if (!isset($password_status) || $password_status == false)
+        <ul class="sidebar-menu">
+            @include('layouts.menu')
+        </ul>
+    @endif
 </aside>

@@ -7,6 +7,7 @@ use App\Models\Traza_Token;
 use App\Models\Dependencias;
 use Illuminate\Http\Request;
 use Alert;
+use App\Events\TrazasEvent;
 use App\Models\Token_Historial;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +46,14 @@ class TokensController extends Controller
 
         }else{
             $tokens = Token_Organismos::paginate(10);
+        }
+
+        if(isset($request->tipo_busqueda) && isset($request->buscador))
+        {
+            $id_user = Auth::user()->id;
+            $id_Accion = 5; //Búsqueda
+            $valores_modificados = 'Tipo de Búsqueda: '.$request->tipo_busqueda.'. Valor Buscado: '.$request->buscador;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Token'));
         }
         
         return view('tokens.index', ['tokens' => $tokens]);
@@ -112,10 +121,10 @@ class TokensController extends Controller
 
             $id_user = Auth::user()->id;
             $id_Accion = 1; //Registro
-            $trazas = Traza_Token::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Datos del Token: Fecha de generacion:'.$fecha_created.' || Fecha de Expiración: '.$fecha_expire.
+            $valores_modificados = 'Datos del Token: Fecha de generacion:'.$fecha_created.' || Fecha de Expiración: '.$fecha_expire.
             ' || Duración del Token(días): '.$request->duracion_token.' || Token: '.$JWT.
-            ' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio]);
+            ' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Token'));
 
             Alert()->success('Token Creado Satisfactoriamente','Su Token es: '.$JWT.'  ||  Su Token expirará el: '.$fecha_expire);
             return redirect()->route('tokens.index');
@@ -137,6 +146,14 @@ class TokensController extends Controller
         $fecha_generacion = $fecha_hoy->diff($generacion)->days;
         $fecha_expiracion = $fecha_hoy->diff($expiracion)->days;
         $ultimo_uso = $fecha_hoy->diff($ultimo)->h;
+
+        $id_user = Auth::user()->id;
+        $id_Accion = 1; //Registro
+        $valores_modificados = 'Datos del Token: Fecha de generacion:'.$token->created_at.' || Fecha de Expiración: '.$token->expires_at.
+        ' || Fecha de Último Uso: '.$token->last_used_at.' || Duración del Token(días): '.$token->duracion_token.' || Token: '.$token->token.
+        ' || Estatus del Token: '.$token->estatus;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Token'));
+
         return view('tokens.show', compact('token', 'fecha_generacion', 'fecha_expiracion', 'ultimo_uso'));
     }
 
@@ -213,10 +230,10 @@ class TokensController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        $trazas = Traza_Token::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos del Token: Fecha de generacion:'.$fecha_created.' || Fecha de Expiración: '.$fecha_expire.
+        $valores_modificados = 'Datos del Token: Fecha de generacion:'.$fecha_created.' || Fecha de Expiración: '.$fecha_expire.
         ' || Duración del Token(días): '.$request->duracion_token.' || Token: '.$JWT.
-        ' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio]);
+        ' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Token'));
 
         Alert()->success('Token Actualizado Satisfactoriamente','Su Token es: '.$JWT.'  ||  Su Token expirará el: '.$fecha_expire);
         return redirect()->route('tokens.index');
@@ -252,9 +269,9 @@ class TokensController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        $trazas = Traza_Token::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos del Token: Estatus previo: '.$estatus_previo.' || Estatus nuevo: '.$notificacion.
-        ' || Token: '.$token.' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio]);
+        $valores_modificados = 'Datos del Token: Estatus previo: '.$estatus_previo.' || Estatus nuevo: '.$notificacion.
+        ' || Token: '.$token.' || Dependencia: '.$dependencia.' || Organismo: '.$organismo.' || Ministerio: '.$ministerio;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Token'));
 
         Alert()->success('Estatus de Token Actualizado', 'Nuevo Estatus: '.$notificacion);
         return redirect()->route('tokens.index');

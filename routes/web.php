@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\BlacklistController;
 use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\SesionController;
@@ -13,8 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TokensController;
 use App\Http\Controllers\UsersQuestionsController;
 use App\Http\Controllers\UsersSIIPOLController;
-use App\Http\Controllers\UsersSIIPOLControllerTest;
-use GuzzleHttp\Middleware;
+use App\Http\Controllers\SessionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,13 +33,13 @@ Route::resource('roles', RoleController::class)->middleware('auth');
 
 Route::resource('tokens', TokensController::class)->middleware('auth');
 
-Route::resource('blacklist', BlacklistController::class)->middleware('auth');
-
 Route::resource('dependencias', DependenciasController::class)->middleware('auth');
 
 Route::resource('trazas', TrazasController::class)->middleware('auth');
 
 Route::resource('sesion', SesionController::class)->middleware('auth');
+
+Route::resource('sessions', SessionsController::class)->middleware('auth');
 
 Route::resource('servicios', ServiciosController::class)->middleware('auth');
 
@@ -67,6 +65,8 @@ Route::get('/traza_api', [App\Http\Controllers\TrazasController::class, 'index_a
 
 Route::get('/traza_servicios', [App\Http\Controllers\TrazasController::class, 'index_servicios'])->name('traza_servicios.index')->middleware('auth');
 
+Route::get('/traza_sesiones', [App\Http\Controllers\TrazasController::class, 'index_sesiones'])->name('traza_sesiones.index')->middleware('auth');
+
 Route::get('/traza_dependencias/{dependencia}', [App\Http\Controllers\TrazasController::class, 'show_dependencias'])->name('traza_dependencias.show')->middleware('auth');
 
 Route::get('/traza_funcionario/{funcionario}', [App\Http\Controllers\TrazasController::class, 'show_funcionarios'])->name('traza_funcionarios.show')->middleware('auth');
@@ -83,7 +83,15 @@ Route::get('/traza_api/{apis}', [App\Http\Controllers\TrazasController::class, '
 
 Route::get('/traza_servicios/{servicios}', [App\Http\Controllers\TrazasController::class, 'show_servicios'])->name('traza_servicios.show')->middleware('auth');
 
-Route::get('logout/{id}', [LoginController::class, 'logout'])->name('questions.logout');
+Route::get('/traza_sesiones/{sesion}', [App\Http\Controllers\TrazasController::class, 'show_sesiones'])->name('traza_sesiones.show')->middleware('auth');
+
+Route::get('/questions/validation', [UsersQuestionsController::class, 'index'])->name('questions.index')->middleware('auth');
+
+//Route::get('logout/{id}', [LoginController::class, 'logout'])->name('logout');
+
+//////////////////////////// /////////////////////////////////
+
+// Estas rutas corresponden a un error no encontrado, las mismas evitan que dichos errores sucedan.
 
 Route::patch('/traza_dependencias/{dependencia}', [App\Http\Controllers\TrazasController::class, 'update_dependencias'])->name('traza_dependencias.update')->middleware('auth');
 
@@ -95,29 +103,31 @@ Route::patch('/traza_roles/{role}', [App\Http\Controllers\TrazasController::clas
 
 Route::patch('/traza_tokens/{token}', [App\Http\Controllers\TrazasController::class, 'update_roles'])->name('traza_tokens.update')->middleware('auth');
 
+Route::patch('/traza_sesiones/{id}', [App\Http\Controllers\TrazasController::class, 'update_roles'])->name('traza_sesiones.update')->middleware('auth');
+
+//////////////////////////// /////////////////////////////////
+
 Route::patch('/reset{user}', [UserController::class, 'ResetPassword'])->name('users.reset')->middleware('auth');
 
 Route::patch('/user/{user}/status', [UserController::class, 'update_status'])->name('users.update_status')->middleware('auth');
 
-Route::patch('/servocios/{servicio}/status', [ServiciosController::class, 'update_status'])->name('servicios.update_status')->middleware('auth');
+Route::patch('/servicios/{servicio}/status', [ServiciosController::class, 'update_status'])->name('servicios.update_status')->middleware('auth');
 
 Route::patch('/tokens/{token}/status', [TokensController::class, 'update_status'])->name('tokens.update_status')->middleware('auth');
 
-Route::patch('/questions/{user}', [UsersQuestionsController::class, 'update'])->name('questions.update');
+Route::patch('/questions/{user}', [UsersQuestionsController::class, 'update'])->name('questions.update')->middleware('auth');;
 
 Route::post('/questions/validation', [UsersQuestionsController::class, 'validation'])->name('questions.validation')->middleware('auth');
 
-Route::post('logout/{id}', [LoginController::class, 'logout']);
+Route::post('logout/{id}', [LoginController::class, 'logout'])->name('logout');
 
-Route::post('/questions/create', [UsersQuestionsController::class, 'store'])->name('questions.create');
+Route::post('/questions/create', [UsersQuestionsController::class, 'store'])->name('questions.create')->middleware('auth');;
 
-Route::delete('/questions/{user}', [UsersQuestionsController::class, 'destroy'])->name('questions.destroy');
+Route::delete('/questions/{user}', [UsersQuestionsController::class, 'destroy'])->name('questions.destroy')->middleware('auth');;
 
 Auth::routes();
 
 //// Contingencia SIIPOL ////
-
-Route::get('TestSIIPOL', [UsersSIIPOLControllerTest::class, 'index']);
 
 Route::get('users_siipol', [UsersSIIPOLController::class, 'index'])->name('users_siipol.index')->middleware('auth');
 

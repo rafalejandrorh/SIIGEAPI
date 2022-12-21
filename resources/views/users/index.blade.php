@@ -54,21 +54,11 @@
                                                 <td class="sorting_1">{{$user->funcionario->jerarquia->valor}}</td>
                                                 <td class="sorting_1">{{$user->users}}</td>
                                                 @can('users.update_status')
-                                                    @if($user->status == true)
-                                                        <td class="sorting_1">
-                                                            {{-- {!! Form::open(['method' => 'DELETE','route' => ['users.destroy', $user->id],'style'=>'display:inline']) !!} --}}
-                                                            {!! Form::model($user, ['method' => 'PATCH','route' => ['users.update_status', $user->id]]) !!}
-                                                                {!! Form::button('Activo', ['type' => 'submit', 'class' => 'btn btn-info']) !!}
-                                                            {!! Form::close() !!} 
-                                                        </td>
-                                                    @else
-                                                        <td class="sorting_1">                                                        
-                                                            {{-- {!! Form::open(['method' => 'DELETE','route' => ['users.destroy', $user->id],'style'=>'display:inline']) !!} --}}
-                                                            {!! Form::model($user, ['method' => 'PATCH','route' => ['users.update_status', $user->id]]) !!}    
-                                                                {!! Form::button('Inactivo', ['type' => 'submit', 'class' => 'btn btn-danger']) !!}
-                                                            {!! Form::close() !!} 
-                                                        </td>
-                                                    @endif
+                                                    <td class="sorting_1">
+                                                        {!! Form::model($user, ['method' => 'PATCH','route' => ['users.update_status', $user->id], 'class' => 'confirmation']) !!}
+                                                            {!! Form::button($user->status == true ? 'Activo' : 'Inactivo', ['type' => 'submit', 'class' => $user->status == true ? 'btn btn-info' : 'btn btn-danger']) !!}
+                                                        {!! Form::close() !!} 
+                                                    </td>
                                                 @elsecan('users.index')
                                                     @if($user->status == true)
                                                         <td class="sorting_1">
@@ -103,4 +93,27 @@
         </div>
     </div>
 </section>
+@endsection
+
+@section('scripts')
+
+    <script>
+        $('.confirmation').submit(function(e){
+            e.preventDefault();
+
+            Swal.fire({
+            title: '¿Estás seguro?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí, estoy seguro!'
+            }).then((result) => {
+            if (result.value) {
+                this.submit();
+            }
+            })
+        });
+    </script>
+
 @endsection

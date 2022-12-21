@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TrazasEvent;
 use App\Models\Servicios;
 use App\Models\Traza_Servicios;
 use Illuminate\Http\Request;
@@ -29,22 +30,18 @@ class ServiciosController extends Controller
         if($request->tipo_busqueda == 'nombre'){
             $servicios = Servicios::Where('nombre', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
-
         }else if($request->tipo_busqueda == 'metodo'){
             $servicios = Servicios::Where('valor', 'ilike', '%'.$request->buscador.'%')->paginate(10);
-
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
         }else{
             $servicios = Servicios::paginate(10);
+        }
+
+        if(isset($request->tipo_busqueda) && isset($request->buscador))
+        {
+            $id_user = Auth::user()->id;
+            $id_Accion = 5; //Búsqueda
+            $valores_modificados = 'Tipo de Búsqueda: '.$request->tipo_busqueda.'. Valor Buscado: '.$request->buscador;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Servicios'));
         }
 
         return view('servicios.index', compact('servicios'));
@@ -77,8 +74,8 @@ class ServiciosController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 1; //Registro
-        $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos del Servicio: '.$request->nombre.' || Activo || '.$request->valor]);
+        $valores_modificados = 'Datos del Servicio: '.$request->nombre.' || Activo || '.$request->valor;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Servicios'));
         
         Alert()->success('Servicio Creado Satisfactoriamente');
         return redirect()->route('servicios.index');
@@ -108,8 +105,8 @@ class ServiciosController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos del Servicio: '.$request->nombre.' || '.$request->metodo]);
+        $valores_modificados = 'Datos del Servicio: '.$request->nombre.' || '.$request->metodo;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Servicios'));
     
         Alert()->success('Servicios Actualizado Satisfactoriamente');
         return redirect()->route('servicios.index');
@@ -126,8 +123,8 @@ class ServiciosController extends Controller
         $servicio = Servicios::Where('id', $id)->first()->toarray();
         $id_user = Auth::user()->id;
         $id_Accion = 3; //Eliminación
-        $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos del Servicio: '.$servicio['nombre'].' || '.$servicio['valor']]);
+        $valores_modificados = 'Datos del Servicio: '.$servicio['nombre'].' || '.$servicio['valor'];
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Servicios'));
 
         $servicios = Servicios::find($id, ['id']);
         $servicios->delete();
@@ -160,8 +157,8 @@ class ServiciosController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        $trazas = Traza_Servicios::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos del Servicio: '.$nombre.' || '.$valor.' || Estatus Previo: '.$estatus.' || Estatus Nuevo: '.$notificacion]);
+        $valores_modificados = 'Datos del Servicio: '.$nombre.' || '.$valor.' || Estatus Previo: '.$estatus.' || Estatus Nuevo: '.$notificacion;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Servicios'));
 
         Alert()->success('Estatus de Servicio Actualizado', 'Nuevo Estatus: '.$notificacion);
         return redirect()->route('servicios.index');

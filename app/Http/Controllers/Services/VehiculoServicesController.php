@@ -13,16 +13,15 @@ class VehiculoServicesController extends Controller
         $this->dataservices = $dataservices;
     }
 
-    public function ServicioVehiculoSolicitado($placa, $ip, $mac, $ente, $usuario)
+    public function consultaVehiculoSolicitadoSiipol($placa, $ip, $mac, $ente, $usuario)
     {
-        $metodo = VehiculoSolicitado;
-        $parametros_servicio = array(
-            'placa'       => $placa,
-            'ip'          => $ip,
-            'mac'         => $mac,
-            'ente'        => $ente,
-            'usuario'     => $usuario,
-        );
+        $metodo = consultarVehiculoSolicitado;
+        $parametros_servicio['placa'] = $placa;
+        $parametros_servicio['ip'] = $ip;
+        $parametros_servicio['mac'] = $mac;
+        $parametros_servicio['ente'] = $ente;
+        $parametros_servicio['usuario'] = $usuario;
+
         $request = $placa;
         $token = $this->dataservices->validarToken();
         if(isset($parametros_servicio['placa']))
@@ -32,20 +31,22 @@ class VehiculoServicesController extends Controller
             $response = $this->dataservices->errorInvalidRequest();
         }
         $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token['data']['token'], $token['data']['Nombre'], $token['data']['Ministerio'], $token['data']['Organismo']);
-        
-        return response()->json($response);
+        $code = $this->dataservices->HttpResponseCode($response['Code']);
+
+        return response()->json($response, $code, [
+            'Accept' => 'application/json'
+        ]);
     }
 
-    public function ServicioDatosVehiculoINTT($placa, $ip, $mac, $ente, $usuario)
+    public function consultaDatosVehiculoINTTSiipol($placa, $ip, $mac, $ente, $usuario)
     {
-        $metodo = DatosVehiculoINTT;
-        $parametros_servicio = array(
-            'placa'       => $placa,
-            'ip'          => $ip,
-            'mac'         => $mac,
-            'ente'        => $ente,
-            'usuario'     => $usuario,
-        );
+        $metodo = consultarDatosVehiculoINTT;
+        $parametros_servicio['placa'] = $placa;
+        $parametros_servicio['ip'] = $ip;
+        $parametros_servicio['mac'] = $mac;
+        $parametros_servicio['ente'] = $ente;
+        $parametros_servicio['usuario'] = $usuario;
+
         $request = $placa;
         $token = $this->dataservices->validarToken();
         if(isset($parametros_servicio['placa']))
@@ -55,7 +56,10 @@ class VehiculoServicesController extends Controller
             $response = $this->dataservices->servicio->errorInvalidRequest();
         }
         $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token['data']['token'], $token['data']['Nombre'], $token['data']['Ministerio'], $token['data']['Organismo']);
-        
-        return response()->json($response);
+        $code = $this->dataservices->HttpResponseCode($response['Code']);
+
+        return response()->json($response, $code, [
+            'Accept' => 'application/json'
+        ]);
     }
 }

@@ -32,33 +32,33 @@ class DataServices extends Model
 
     function __construct()
     {
-        $this->vehiculoSolicitado = URL_ESB1.WSDL_VehiculoSolicitada;
-        $this->personaSolicitada = URL_ESB1.WSDL_PersonaSolicitada;
-        $this->datosvehiculo = URL_ESB1.WSDL_DatosVehiculoINTT;
-        $this->datospersona = URL_ESB1.WSDL_DatosPersonaSAIME;
-        $this->armaSolicitada = URL_ESB1.WSDL_ArmaSolicitada;
-        $this->usuarioInterno = URL_ESB1.WSDL_DatosUsuarioInterno;
-        $this->usuarioExterno = URL_ESB1.WSDL_DatosUsuarioExterno;
-        $this->contrasennaUsuario = URL_ESB1.WSDL_ActualizarContrasennaUsuario;
+        $this->consultarVehiculoSolicitado = URL_ESB1.WSDL_consultarVehiculoSolicitado;
+        $this->consultarPersonaSolicitada = URL_ESB1.WSDL_consultarPersonaSolicitada;
+        $this->consultarDatosVehiculo = URL_ESB1.WSDL_consultarDatosVehiculoINTT;
+        $this->consultarDatosPersona = URL_ESB1.WSDL_consultarDatosPersonaSAIME;
+        $this->consultarArmaSolicitada = URL_ESB1.WSDL_consultarArmaSolicitada;
+        $this->UsuarioInterno = URL_ESB1.WSDL_consultarDatosUsuarioInterno;
+        $this->UsuarioExterno = URL_ESB1.WSDL_consultarDatosUsuarioExterno;
+        $this->actualizarContrasennaUsuario = URL_ESB1.WSDL_actualizarContrasennaUsuario;
     }
 
     public function Servicios(){
-        if($this->metodo == PersonaSolicitada){
-            $cliente = new nusoap_client($this->personaSolicitada, WSDL);
-        }else if($this->metodo == VehiculoSolicitado){
-            $cliente = new nusoap_client($this->vehiculoSolicitado, WSDL);
-        }else if($this->metodo == ArmaSolicitada){
-            $cliente = new nusoap_client($this->armaSolicitada, WSDL);
-        }else if($this->metodo == DatosPersonaSAIME){
-            $cliente = new nusoap_client($this->datospersona, WSDL);
-        }else if($this->metodo == DatosVehiculoINTT){
-            $cliente = new nusoap_client($this->datosvehiculo, WSDL);
-        }else if($this->metodo == DatosUsuarioInterno){
-            $cliente = new nusoap_client($this->usuarioInterno, WSDL);
-        }else if($this->metodo == DatosUsuarioExterno){
-            $cliente = new nusoap_client($this->usuarioExterno, WSDL);
-        }else if($this->metodo == ActualizarContrasennaUsuario){
-            $cliente = new nusoap_client($this->contrasennaUsuario, WSDL);
+        if($this->metodo == consultarPersonaSolicitada){
+            $cliente = new nusoap_client($this->consultarPersonaSolicitada, WSDL);
+        }else if($this->metodo == consultarVehiculoSolicitado){
+            $cliente = new nusoap_client($this->consultarVehiculoSolicitado, WSDL);
+        }else if($this->metodo == consultarArmaSolicitada){
+            $cliente = new nusoap_client($this->consultarArmaSolicitada, WSDL);
+        }else if($this->metodo == consultarDatosPersonaSAIME){
+            $cliente = new nusoap_client($this->consultarDatosPersona, WSDL);
+        }else if($this->metodo == consultarDatosVehiculoINTT){
+            $cliente = new nusoap_client($this->consultarDatosVehiculo, WSDL);
+        }else if($this->metodo == consultarDatosUsuarioInterno){
+            $cliente = new nusoap_client($this->UsuarioInterno, WSDL);
+        }else if($this->metodo == consultarDatosUsuarioExterno){
+            $cliente = new nusoap_client($this->UsuarioExterno, WSDL);
+        }else if($this->metodo == actualizarContrasennaUsuario){
+            $cliente = new nusoap_client($this->actualizarContrasennaUsuario, WSDL);
         }
         $result = $cliente->call("$this->metodo", $this->parametros); 
         return $result;

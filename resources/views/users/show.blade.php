@@ -58,6 +58,12 @@
                                     {!! Form::text('users', $user->users, array('class' => 'form-control', 'readonly')) !!}
                                 </div>
                             </div> 
+                            <div class="col-xs-12 col-sm-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="email">Último Inicio de Sesión</label>
+                                    {!! Form::text('last_login', $user->last_login, array('class' => 'form-control', 'readonly')) !!}
+                                </div>
+                            </div> 
                         </div>
                         </div>
                     </div>

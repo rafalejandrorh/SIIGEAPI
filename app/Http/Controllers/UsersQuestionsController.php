@@ -12,19 +12,37 @@ use App\Models\Traza_User;
 
 class UsersQuestionsController extends Controller
 {
+    public function index(Request $request)
+    {
+        $question = Users_Questions::join('questions', 'questions.id', '=', 'users_questions.id_questions')
+        ->where('id_users', '=', $request->id_user)->select('questions.question', 'users_questions.response', 'users_questions.id')
+        ->orderByRaw("random()")->limit(1)->get();
+
+        return view('auth.login_questions', compact('question'));
+    }
+
     public function validation(Request $request)
     {
+        $id_user = Auth::user()->id;
+        $password_status = Auth::user()->password_status;
         $validation_question = Users_Questions::Where('id', $request->id_question)->get();
 
         if($validation_question[0]['response'] == $request->question)
         {
-            Alert()->toast('Inicio de Sesión Exitoso','success');
-            return view('home');
+            if($password_status)
+            {
+                Alert()->warning('Atención', 'Por Razones de Seguridad, debe cambiar su contraseña.');
+                return redirect()->route('sesion.index', compact('password_status'));
+            }else{
+                Alert()->toast('Inicio de Sesión Exitoso','success');
+                return redirect()->route('home');
+            }
+            
         }else{
             $id_logout = 3;
-            $id_user = Auth::user()->id;
+            
             app(UserController::class)->update_status($id_user);
-            return redirect()->route('questions.logout', [$id_logout]);
+            return redirect()->route('logout', [$id_logout]);
         }
     }
 

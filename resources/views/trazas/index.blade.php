@@ -173,6 +173,21 @@
                 </div>
             </div>
 
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <center><a class="btn btn-primary" href="{{ route('traza_sesiones.index') }}"><i class='fa fa-clock'> Sesiones</i></a></center>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>

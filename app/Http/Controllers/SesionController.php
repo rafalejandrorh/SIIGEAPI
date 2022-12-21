@@ -18,7 +18,7 @@ class SesionController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function index()
+    public function index($password_status = null)
     {
         $data = Auth::user()->id;
         $user = User::Where('id', $data)->get();
@@ -32,7 +32,7 @@ class SesionController extends Controller
         $padre2 = $user_questions->Where('id_padre', 20000)->Where('id_users', $data)->select('id_padre')->get();
         $padre3 = $user_questions->Where('id_padre', 30000)->Where('id_users', $data)->select('id_padre')->get();
 
-        return view('sesion.index', compact('user', 'data', 'question1', 'question2', 'question3', 'padre1', 'padre2', 'padre3'));
+        return view('sesion.index', compact('user', 'data', 'question1', 'question2', 'question3', 'padre1', 'padre2', 'padre3', 'password_status'));
     }
 
     /**
@@ -76,15 +76,17 @@ class SesionController extends Controller
             {
                 $request['password'] = bcrypt($request['password']);
                 $user = User::find($id, ['id']);
-                $user->update(['password' => $request['password']]);
+                $user->update([
+                    'password' => $request['password'],
+                    'password_status' => false
+                ]);
                 Alert()->success('Cambio de Contraseña Exitoso');
-                return back();
+                return redirect()->route('home');
             }else{
                 Alert()->warning('Lo sentimos', 'La nueva Contraseña coincide con la Actual. Por favor, inserta una Contraseña distinta.');
                 return back();
             }
             
-
         }else{
             Alert()->error('La Contraseña Actual indicada no coincide con nuestros registros.');
             return back()->with('error', 'Ok');

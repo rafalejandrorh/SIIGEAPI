@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TrazasEvent;
 use App\Models\Services\DataServices;
 use App\Models\Traza_User;
 use App\Models\Traza_User_SIIPOL;
@@ -50,12 +51,6 @@ class UsersSIIPOLController extends Controller
                 $user['DatosUsuario']['division'] = utf8_encode($user['DatosUsuario']['division']);
             }
 
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User_SIIPOL::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda - Funcionario: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
-
         }else if($request->tipo_busqueda == 'externo'){
             $servicio->setMetodo(DatosUsuarioExterno);
             $servicio->setParametros($parametros);
@@ -70,13 +65,16 @@ class UsersSIIPOLController extends Controller
                 $user['DatosUsuarioExterno']['segundo_apellido'] = utf8_encode($user['DatosUsuarioExterno']['segundo_apellido']);
             }
 
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User_SIIPOL::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda - Funcionario: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
         }else{
             $user = null;
+        }
+
+        if(isset($request->tipo_busqueda) && isset($request->buscador))
+        {
+            $id_user = Auth::user()->id;
+            $id_Accion = 5; //Búsqueda
+            $valores_modificados = 'Tipo de Búsqueda: '.$request->tipo_busqueda.'. Valor Buscado: '.$request->buscador;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Users_SIIPOL'));
         }
         
         return view('users_siipol.index', ['Users' => $user]);
@@ -120,8 +118,8 @@ class UsersSIIPOLController extends Controller
             Alert()->success('Contraseña Actualizada Satisfactoriamente');
             $id_user = Auth::user()->id;
             $id_Accion = 2; //Actualización
-            $trazas = Traza_User_SIIPOL::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Contraseña Modificada. Usuario: '.$request->users]);
+            $valores_modificados = 'Contraseña Modificada. Usuario: '.$request->users;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Users_SIIPOL'));
         }else{
             Alert()->warning('No se puedo Actualizar la Contraseña del Usuario', 'Comunícate con la División de Desarrollo de Sistemas - Coordinación de Soporte de Aplicaciones');
         }

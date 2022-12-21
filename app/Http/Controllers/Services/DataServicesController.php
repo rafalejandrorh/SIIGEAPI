@@ -87,7 +87,7 @@ class DataServicesController extends Controller
 
     public function validarRequest($parametros, $metodo, $token)
     {
-        if($token['response']['Code'] == 202){
+        if($token['response']['Code'] == 502){
             $validar_estatus_metodo = $this->metodos->where('valor', $metodo)->select('estatus')->first()->toarray();
             if($validar_estatus_metodo['estatus'] == true)
             {
@@ -151,6 +151,52 @@ class DataServicesController extends Controller
         $this->trazas->organismo = $organismo;
         $this->trazas->ministerio = $ministerio;
         $this->trazas->save();
+    }
+
+    public function HttpResponseCode($code)
+    {
+        switch ($code) {
+            case 500:
+                $code = 200;
+                break;
+            case 600:
+                $code = 400;
+                break;
+            case 602:
+                $code = 400;
+            break;
+            case 601:
+                $code = 401;
+                break;
+            case 606:
+                $code = 403;
+                break;
+            case 607:
+                $code = 403;
+                break;
+            case 609:
+                $code = 403;
+                break;
+            case 603:
+                $code = 404;
+            break;
+            case 610:
+                $code = 404;
+                break;
+            case 604:
+                $code = 405;
+                break;
+            case 605:
+                $code = 412;
+                break;
+            case 608:
+                $code = 412;
+                break;
+            default:
+                $code = 0;
+                break;
+        }
+        return $code;
     }
 
     private function okCodeService($servicio, $datos)

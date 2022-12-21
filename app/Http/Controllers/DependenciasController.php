@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Genero;
 use App\Models\Person;
 use Alert;
+use App\Events\TrazasEvent;
 use App\Models\Dependencias;
 use App\Models\Dependencias_Servicios;
 use App\Models\Servicios;
@@ -37,32 +38,22 @@ class DependenciasController extends Controller
         if($request->tipo_busqueda == 'dependencia'){
             $dependencias = Dependencias::Where('Nombre', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_Dependencias::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
-
         }else if($request->tipo_busqueda == 'ministerio'){
             $dependencias = Dependencias::Where('Ministerio', 'ilike', '%'.$request->buscador.'%')->paginate(10);
-
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_Dependencias::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
 
         }else if($request->tipo_busqueda == 'organismo'){
             $dependencias = Dependencias::Where('Organismo', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_Dependencias::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
-
         }else{
             $dependencias = Dependencias::paginate(10);
+        }
+
+        if(isset($request->tipo_busqueda) && isset($request->buscador))
+        {
+            $id_user = Auth::user()->id;
+            $id_Accion = 5; //Búsqueda
+            $valores_modificados = 'Tipo de Búsqueda: '.$request->tipo_busqueda.'. Valor Buscado: '.$request->buscador;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Dependencias'));
         }
         
         return view('dependencias.index', ['dependencias' => $dependencias]);
@@ -132,12 +123,11 @@ class DependenciasController extends Controller
 
             $id_user = Auth::user()->id;
             $id_Accion = 1; //Registro
-            $trazas = Traza_Dependencias::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Datos de la Dependencia: '.$request->organismo.', '.$request->dependencia.', Adscrito al: '.$request->ministerio.
-            'Datos del Representante: '.$obtener_persona[0]['letra_cedula'].$obtener_persona[0]['cedula'].
+            $valores_modificados = 'Datos del Representante: '.$obtener_persona[0]['letra_cedula'].$obtener_persona[0]['cedula'].
             ' || '.$obtener_persona[0]['primer_nombre'].', '.$obtener_persona[0]['segundo_nombre'].' || '.
             $obtener_persona[0]['primer_apellido'].', '.$obtener_persona[0]['segundo_apellido'].' || '.
-            $genero.' || '.$obtener_persona[0]['telefono'].' || '.$obtener_persona[0]['correo_electronico'].' || Servicios a Consumir: '.$nombre_servicio]);
+            $genero.' || '.$obtener_persona[0]['telefono'].' || '.$obtener_persona[0]['correo_electronico'].' || Servicios a Consumir: '.$nombre_servicio;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Dependencias'));
 
             Alert()->success('Dependencia Creada Satisfactoriamente');
             return redirect()->route('dependencias.index');
@@ -187,11 +177,11 @@ class DependenciasController extends Controller
 
             $id_user = Auth::user()->id;
             $id_Accion = 1; //Registro
-            $trazas = Traza_Dependencias::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Datos de la Dependencia: '.$request->organismo.', '.$request->dependencia.', Adscrito al: '.$request->ministerio.
+            $valores_modificados = 'Datos de la Dependencia: '.$request->organismo.', '.$request->dependencia.', Adscrito al: '.$request->ministerio.
             '|| Datos del Representante: '.$request->letra_cedula.$request->cedula.
             ' || '.$request->primer_nombre.' || '.$request->segundo_nombre.' || '.$request->primer_apellido.' || '.
-            $request->segundo_apellido.' || '.$genero.' || '.$request->telefono.' || '.$request->correo.' || Servicios a Consumir: '.$nombre_servicio]);
+            $request->segundo_apellido.' || '.$genero.' || '.$request->telefono.' || '.$request->correo.' || Servicios a Consumir: '.$nombre_servicio;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Dependencias'));
 
             Alert()->success('Dependencia Creada Satisfactoriamente');
             return redirect()->route('dependencias.index');
@@ -292,12 +282,12 @@ class DependenciasController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        $trazas = Traza_Dependencias::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos de la Dependencia: '.$request->organismo.', '.$request->dependencia.', Adscrito al: '.$request->ministerio.
+        $valores_modificados = 'Datos de la Dependencia: '.$request->organismo.', '.$request->dependencia.', Adscrito al: '.$request->ministerio.
         '|| Datos del Representante: '.$request->letra_cedula.$request->cedula.' || '.
         $request->primer_nombre.', '.$request->segundo_nombre.' || '.$request->primer_apellido.', '.
-        $request->segundo_apellido.' || '.$genero.' || '.$request->fecha_nacimiento.' || '.$request->telefono.' || '.$request->correo.' || Servicios a Consumir: '.$nombre_servicio]);
-    
+        $request->segundo_apellido.' || '.$genero.' || '.$request->fecha_nacimiento.' || '.$request->telefono.' || '.$request->correo.' || Servicios a Consumir: '.$nombre_servicio;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_Dependencias'));
+
         Alert()->success('Dependencia Actualizada Satisfactoriamente');
         return redirect()->route('dependencias.index');
     }

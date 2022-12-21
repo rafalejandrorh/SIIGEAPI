@@ -13,16 +13,15 @@ class ArmaServicesController extends Controller
         $this->dataservices = $dataservices;
     }
 
-    public function ServicioArmaSolicitada($serial, $ip, $mac, $ente, $usuario)
+    public function consultaArmaSolicitadaSiipol($serial, $ip, $mac, $ente, $usuario)
     {
-        $metodo = ArmaSolicitada;
-        $parametros_servicio = array(
-            'noserialprimario'    => $serial,
-            'ip'                => $ip,
-            'mac'               => $mac,
-            'ente'              => $ente,
-            'usuario'           => $usuario,
-        );
+        $metodo = consultarArmaSolicitada;
+        $parametros_servicio['noserialprimario'] = $serial;
+        $parametros_servicio['ip'] = $ip;
+        $parametros_servicio['mac'] = $mac;
+        $parametros_servicio['ente'] = $ente;
+        $parametros_servicio['usuario'] = $usuario;
+
         $request = $serial;
         $token = $this->dataservices->validarToken();
         if(isset($parametros_servicio['noserialprimario']))
@@ -32,8 +31,11 @@ class ArmaServicesController extends Controller
             $response = $this->dataservices->errorInvalidRequest();
         }
         $this->dataservices->GuardarTrazas($ip, $mac, $usuario, $ente, $metodo, $response, $request, $token['data']['token'], $token['data']['Nombre'], $token['data']['Ministerio'], $token['data']['Organismo']);
-        
-        return response()->json($response);
+        $code = $this->dataservices->HttpResponseCode($response['Code']);
+
+        return response()->json($response, $code, [
+            'Accept' => 'application/json'
+        ]);
     }
 
 }

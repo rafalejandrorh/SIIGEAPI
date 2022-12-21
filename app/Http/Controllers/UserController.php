@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Alert;
+use App\Events\TrazasEvent;
 
 class UserController extends Controller
 {
@@ -36,94 +37,72 @@ class UserController extends Controller
             $request->buscador = null;
         }
 
-        if($request->tipo_busqueda == 'cedula'){
-            $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
-            ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
-            ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
-            ->Where('persons.cedula', '=', $request->buscador)->paginate(10);
-
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
-            
-        }else if($request->tipo_busqueda == 'credencial'){
-            $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
-            ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
-            ->Where('funcionarios.credencial', '=', $request->buscador)->paginate(10);
-
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
-
-        }else if($request->tipo_busqueda == 'jerarquia'){
-            $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
-            ->join('jerarquia', 'jerarquia.id', '=', 'funcionarios.id_jerarquia')
-            ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
-            ->Where('jerarquia.valor', 'ilike', '%'.$request->buscador.'%')->paginate(10);
-
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
-
-        }else if($request->tipo_busqueda == 'usuario'){
-            $user = User::select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
-            ->Where('users', 'ilike', '%'.$request->buscador.'%')
-            ->paginate(10);
-
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
-
-        }else if($request->tipo_busqueda == 'estatus'){
-            if($request->buscador == 'activo' || $request->buscador == 'Activo' || $request->buscador == 'ACTIVO'){
-                $status = true;
-            }else if($request->buscador == 'inactivo' || $request->buscador == 'Inactivo' || $request->buscador == 'INACTIVO'){
-                $status = false;
+        if(isset($request->buscador) && is_numeric($request->buscador))
+        {
+            if($request->tipo_busqueda == 'cedula'){
+                $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
+                ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
+                ->Where('persons.cedula', '=', $request->buscador)->paginate(10);
+                
+            }else if($request->tipo_busqueda == 'credencial'){
+                $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
+                ->Where('funcionarios.credencial', '=', $request->buscador)->paginate(10);
+            }else{
+                Alert()->warning('Búsqueda no permitida');
+                $user = User::paginate(10);
             }
-            $user = User::select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
-            ->Where('status', '=', $status)
-            ->paginate(10);
 
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
+        }else if(isset($request->buscador) && is_string($request->buscador)){
 
-        }else if($request->tipo_busqueda == 'nombre'){
-            $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
-            ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
-            ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
-            ->Where('persons.primer_nombre', 'ilike', '%'.$request->buscador.'%')->paginate(5);
+            if($request->tipo_busqueda == 'jerarquia'){
+                $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->join('jerarquia', 'jerarquia.id', '=', 'funcionarios.id_jerarquia')
+                ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
+                ->Where('jerarquia.valor', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
+            }else if($request->tipo_busqueda == 'usuario'){
+                $user = User::select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
+                ->Where('users', 'ilike', '%'.$request->buscador.'%')
+                ->paginate(10);
 
-        }else if($request->tipo_busqueda == 'apellido'){
-            $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
-            ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
-            ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
-            ->Where('persons.primer_apellido', 'ilike', '%'.$request->buscador.'%')->paginate(5);
+            }else if($request->tipo_busqueda == 'estatus'){
+                if($request->buscador == 'activo' || $request->buscador == 'Activo' || $request->buscador == 'ACTIVO'){
+                    $status = true;
+                }else if($request->buscador == 'inactivo' || $request->buscador == 'Inactivo' || $request->buscador == 'INACTIVO'){
+                    $status = false;
+                }
+                $user = User::select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
+                ->Where('status', '=', $status)
+                ->paginate(10);
 
-            $id_user = Auth::user()->id;
-            $id_Accion = 5; //Búsqueda
-            $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Tipo de Búsqueda: '.
-            $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
+            }else if($request->tipo_busqueda == 'nombre'){
+                $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
+                ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
+                ->Where('persons.primer_nombre', 'ilike', '%'.$request->buscador.'%')->paginate(5);
 
+            }else if($request->tipo_busqueda == 'apellido'){
+                $user = User::join('funcionarios', 'funcionarios.id', '=', 'users.id_funcionario')
+                ->join('persons', 'persons.id', '=', 'funcionarios.id_person')
+                ->select('users.id', 'users.id_funcionario', 'users.users', 'users.status')
+                ->Where('persons.primer_apellido', 'ilike', '%'.$request->buscador.'%')->paginate(5);
+
+            }else{
+                Alert()->warning('Búsqueda no permitida');
+                $user = User::paginate(10);
+            }
         }else{
             $user = User::paginate(10);
+        }
+
+        if(isset($request->tipo_busqueda) && isset($request->buscador))
+        {
+            $id_user = Auth::user()->id;
+            $id_Accion = 5; //Búsqueda
+            $valores_modificados = 'Tipo de Búsqueda: '.$request->tipo_busqueda.'. Valor Buscado: '.$request->buscador;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_User'));
         }
         
         return view('users.index', ['Users' => $user]);
@@ -189,8 +168,8 @@ class UserController extends Controller
 
             $id_user = Auth::user()->id;
             $id_Accion = 1; //Registro
-            $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-            'valores_modificados' => 'Datos de Usuario: '.$request['users'].' || Activo || '.$rol]);
+            $valores_modificados = 'Datos de Usuario: '.$request['users'].' || Activo || '.$rol;
+            event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_User'));
 
             Alert()->success('Usuario Creado Satisfactoriamente');
             return redirect()->route('users.index');
@@ -219,10 +198,10 @@ class UserController extends Controller
         }else{
             $estatus = 'Inactivo';
         }
-        $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos de Usuario: '.
+        $valores_modificados = 'Datos de Usuario: '.
         $user->funcionario->jerarquia->valor.'. '.$user->funcionario->person->primer_nombre.' '.
-        $user->funcionario->person->primer_apellido.' || '.$estatus.' || '.$user->users]);
+        $user->funcionario->person->primer_apellido.' || '.$estatus.' || '.$user->users;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_User'));
 
         $roles = Role::pluck('name','id')->all();
         return view('users.show', compact('user', 'roles'));
@@ -259,8 +238,8 @@ class UserController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos de Usuario: '.$request['users'].' || Activo || '.$rol]);
+        $valores_modificados = 'Datos de Usuario: '.$request['users'].' || Activo || '.$rol;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_User'));
     
         Alert()->success('Usuario Actualizado Satisfactoriamente');
         return redirect()->route('users.index');
@@ -273,18 +252,21 @@ class UserController extends Controller
         ->select('persons.cedula', 'users.users')->Where('users.id', $id)->get();
         foreach($user as $usr)
         {
-            $password = 'pm*'.$usr['cedula'].'..';
+            $password = 'cicpc*'.$usr['cedula'].'..';
             $usuario = $usr['users'];
         }
         $bcrypt = bcrypt($password);
         $reset_password = User::find($id, ['id']);
-        $reset_password->update(['password'=>$bcrypt]);
+        $reset_password->update([
+            'password' => $bcrypt,
+            'password_status' => true
+        ]);
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Se reseteó la contraseña del Usuario: '.
-        $usuario.'. Se colocó la contraseña genérica']);
+        $valores_modificados = 'Se reseteó la contraseña del Usuario: '.
+        $usuario.'. Se colocó la contraseña genérica';
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_User'));
 
         Alert()->success('Reinicio de Contraseña realizado', 'Nueva Contraseña: '.$password);
         return back(); 
@@ -325,9 +307,9 @@ class UserController extends Controller
 
         $id_user = Auth::user()->id;
         $id_Accion = 2; //Actualización
-        $trazas = Traza_User::create(['id_user' => $id_user, 'id_accion' => $id_Accion, 
-        'valores_modificados' => 'Datos de Usuario: '.
-        $usuario.' || '.$notificacion]);
+        $valores_modificados = 'Datos de Usuario: '.
+        $usuario.' || '.$notificacion;
+        event(new TrazasEvent($id_user, $id_Accion, $valores_modificados, 'Traza_User'));
 
         Alert()->success('Estatus de Usuario Actualizado', 'Nuevo Estatus: '.$notificacion);
         return redirect()->route('users.index');

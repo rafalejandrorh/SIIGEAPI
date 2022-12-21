@@ -16,7 +16,11 @@
             </a>
 
             <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="{{ route('sesion.index') }}"><i class="fa fa-lock"></i>  Ajustes</a>
+                @can('users.password')
+                    @if (!isset($password_status) || $password_status == false)
+                        <a class="dropdown-item" href="{{ route('sesion.index') }}"><i class="fa fa-lock"></i>  Ajustes</a>
+                    @endif
+                @endcan
                 <a class="dropdown-item text-danger"
                     onclick="event.preventDefault(); localStorage.clear();  document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt"></i>  Cerrar Sesión</a>

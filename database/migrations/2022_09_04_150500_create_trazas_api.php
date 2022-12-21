@@ -15,13 +15,14 @@ return new class extends Migration
     {
         Schema::create('trazas_api', function (Blueprint $table) {
             $table->id();
+            $table->string('action');
+            $table->string('fecha_request');
+            $table->string('request');
+            $table->string('response');
             $table->string('ip');
             $table->string('mac');
             $table->string('usuario');
-            $table->string('fecha_request');
-            $table->string('action');
-            $table->string('response');
-            $table->string('request');
+            $table->string('ente');
             $table->string('token');
             $table->string('dependencia');
             $table->string('organismo');

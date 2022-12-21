@@ -74,6 +74,8 @@
                                                     <td class="sorting_1">Finalizada por el Sistema</td>
                                                 @elseif ($historial->tipo_logout == 3)
                                                     <td class="sorting_1">Fallo en Pregunta de Seguridad</td>
+                                                @elseif ($historial->tipo_logout == 4)
+                                                    <td class="sorting_1">Finalizada por un Tercero</td>
                                                 @else
                                                     <td class="sorting_1">Sin Finalizar</td>
                                                 @endif

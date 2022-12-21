@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@extends('servicios.partials.header')
+@extends('sesion.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -12,9 +12,11 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-12">
-                                    <a href="{{ route('home') }}" class="btn btn-danger"><i class="fa fa-reply"></i> Regresar</a>
-                                </div>
+                                @if (!isset($password_status) || $password_status == false)
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <a href="{{ route('home') }}" class="btn btn-danger"><i class="fa fa-reply"></i> Regresar</a>
+                                    </div>
+                                @endif
                                 
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                 <br>
@@ -56,7 +58,7 @@
                                 </div>
                             @endif
                                 
-                            {!! Form::model($usr, ['method' => 'PATCH','route' => ['sesion.update', $usr->id]]) !!}
+                            {!! Form::model($usr, ['method' => 'PATCH', 'route' => ['sesion.update', $usr->id]]) !!}
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-12">
                                     <br>
@@ -95,7 +97,7 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body"> 
-                                {!! Form::model($user, ['method' => 'PATCH','route' => ['questions.update', $user[0]['id']]]) !!}
+                                {!! Form::model($usr, ['method' => 'PATCH','route' => ['questions.update', $user[0]['id']]]) !!}
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12">
                                         <h4>Modificar Preguntas de Seguridad</h4>
