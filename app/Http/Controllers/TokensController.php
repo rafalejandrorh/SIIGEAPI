@@ -18,13 +18,11 @@ class TokensController extends Controller
 {
     function __construct()
     {
-
         $this->middleware('can:tokens.index')->only('index');
         $this->middleware('can:tokens.create')->only('create');
         $this->middleware('can:tokens.show')->only('show');
         $this->middleware('can:tokens.edit')->only('edit', 'update');
         $this->middleware('can:tokens.update_status')->only('update_status');
- 
     }
     /**
      * Display a listing of the resource.
@@ -36,8 +34,8 @@ class TokensController extends Controller
         $request->all();
 
         if($request->tipo_busqueda == 'dependencia'){
-            $tokens = Token_Organismos::join('dependencias', 'dependencias.id', '=', 'token_organismos.id_dependencias')
-            ->Where('dependencias.Nombre', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $tokens = Token_Organismos::join('dependencias', 'dependencias.id', '=', 'token_dependencias.id_dependencias')
+            ->Where('dependencias.Nombre', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
@@ -204,8 +202,8 @@ class TokensController extends Controller
             'expires_at' => $fecha_expire,
             'last_used_at' => null
         ]);
-
-        $tokens = Dependencias::Where('id', $request->dependencia)->get();
+        
+        $tokens = Dependencias::Where('id', $id)->get();
         foreach($tokens as $token)
         {
             $dependencia = $token['Nombre'];

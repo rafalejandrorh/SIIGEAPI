@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('dependencias.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="col-xs-3 col-sm-3 col-md-3">
                                     <div class="form-group">
-                                        {!! Form::text('buscador', null, array('class' => 'form-control', 'onkeyup'=>'mayus(this);')) !!}
+                                        {!! Form::text('buscador', null, array('class' => 'form-control')) !!}
                                     </div>
                                 </div>
                                 <div class="col-xs-3 col-sm-3 col-md-3">

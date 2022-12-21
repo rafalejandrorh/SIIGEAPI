@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('roles.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -43,7 +43,7 @@
                                     <label for="">Permisos para este Rol:</label>
                                     <br/>
                                     @foreach($permission as $value)
-                                        <label>{{ Form::checkbox('permission[]', $value->id, false, array('class' => 'name')) }}
+                                        <label>{{ Form::checkbox('permission[]', $value->id, false) }}
                                         {{ $value->description }}</label>
                                     <br/>
                                     @endforeach

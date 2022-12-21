@@ -1,15 +1,20 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BlacklistController;
 use App\Http\Controllers\DependenciasController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\SesionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\TrazasController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TokensController;
 use App\Http\Controllers\UsersQuestionsController;
+use App\Http\Controllers\UsersSIIPOLController;
+use App\Http\Controllers\UsersSIIPOLControllerTest;
+use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,11 +35,15 @@ Route::resource('roles', RoleController::class)->middleware('auth');
 
 Route::resource('tokens', TokensController::class)->middleware('auth');
 
+Route::resource('blacklist', BlacklistController::class)->middleware('auth');
+
 Route::resource('dependencias', DependenciasController::class)->middleware('auth');
 
 Route::resource('trazas', TrazasController::class)->middleware('auth');
 
 Route::resource('sesion', SesionController::class)->middleware('auth');
+
+Route::resource('servicios', ServiciosController::class)->middleware('auth');
 
 Route::get('/', [LoginController::class, 'index']);
 
@@ -56,6 +65,8 @@ Route::get('/traza_historial_tokens', [App\Http\Controllers\TrazasController::cl
 
 Route::get('/traza_api', [App\Http\Controllers\TrazasController::class, 'index_api'])->name('traza_api.index')->middleware('auth');
 
+Route::get('/traza_servicios', [App\Http\Controllers\TrazasController::class, 'index_servicios'])->name('traza_servicios.index')->middleware('auth');
+
 Route::get('/traza_dependencias/{dependencia}', [App\Http\Controllers\TrazasController::class, 'show_dependencias'])->name('traza_dependencias.show')->middleware('auth');
 
 Route::get('/traza_funcionario/{funcionario}', [App\Http\Controllers\TrazasController::class, 'show_funcionarios'])->name('traza_funcionarios.show')->middleware('auth');
@@ -69,6 +80,8 @@ Route::get('/traza_tokens/{tokens}', [App\Http\Controllers\TrazasController::cla
 Route::get('/traza_historial_tokens/{historial_tokens}', [App\Http\Controllers\TrazasController::class, 'show_historial_tokens'])->name('traza_historial_tokens.show')->middleware('auth');
 
 Route::get('/traza_api/{apis}', [App\Http\Controllers\TrazasController::class, 'show_api'])->name('traza_api.show')->middleware('auth');
+
+Route::get('/traza_servicios/{servicios}', [App\Http\Controllers\TrazasController::class, 'show_servicios'])->name('traza_servicios.show')->middleware('auth');
 
 Route::get('logout/{id}', [LoginController::class, 'logout'])->name('questions.logout');
 
@@ -86,6 +99,8 @@ Route::patch('/reset{user}', [UserController::class, 'ResetPassword'])->name('us
 
 Route::patch('/user/{user}/status', [UserController::class, 'update_status'])->name('users.update_status')->middleware('auth');
 
+Route::patch('/servocios/{servicio}/status', [ServiciosController::class, 'update_status'])->name('servicios.update_status')->middleware('auth');
+
 Route::patch('/tokens/{token}/status', [TokensController::class, 'update_status'])->name('tokens.update_status')->middleware('auth');
 
 Route::patch('/questions/{user}', [UsersQuestionsController::class, 'update'])->name('questions.update');
@@ -99,3 +114,15 @@ Route::post('/questions/create', [UsersQuestionsController::class, 'store'])->na
 Route::delete('/questions/{user}', [UsersQuestionsController::class, 'destroy'])->name('questions.destroy');
 
 Auth::routes();
+
+//// Contingencia SIIPOL ////
+
+Route::get('TestSIIPOL', [UsersSIIPOLControllerTest::class, 'index']);
+
+Route::get('users_siipol', [UsersSIIPOLController::class, 'index'])->name('users_siipol.index')->middleware('auth');
+
+Route::get('users_siipol/edit/{id}/{user}', [UsersSIIPOLController::class, 'edit'])->name('users_siipol.edit')->middleware('auth');
+
+Route::put('users_siipol/password/{id}', [UsersSIIPOLController::class, 'update'])->name('users_siipol.update')->middleware('auth');
+
+Route::get('/traza_users_siipol', [TrazasController::class, 'index_usuarios_siipol'])->name('traza_user_siipol.index')->middleware('auth');

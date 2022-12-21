@@ -11,6 +11,8 @@ use App\Models\Genero;
 use App\Models\Person;
 use Alert;
 use App\Models\Dependencias;
+use App\Models\Dependencias_Servicios;
+use App\Models\Servicios;
 use App\Models\Traza_Dependencias;
 
 class DependenciasController extends Controller
@@ -33,7 +35,7 @@ class DependenciasController extends Controller
         $request->all();
 
         if($request->tipo_busqueda == 'dependencia'){
-            $dependencias = Dependencias::Where('Nombre', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $dependencias = Dependencias::Where('Nombre', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
@@ -42,7 +44,7 @@ class DependenciasController extends Controller
             $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
 
         }else if($request->tipo_busqueda == 'ministerio'){
-            $dependencias = Dependencias::Where('Ministerio', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $dependencias = Dependencias::Where('Ministerio', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
@@ -51,7 +53,7 @@ class DependenciasController extends Controller
             $request->tipo_busqueda.'. Valor Buscado: '.$request->buscador]);
 
         }else if($request->tipo_busqueda == 'organismo'){
-            $dependencias = Dependencias::Where('Organismo', 'LIKE', '%'.$request->buscador.'%')->paginate(10);
+            $dependencias = Dependencias::Where('Organismo', 'ilike', '%'.$request->buscador.'%')->paginate(10);
 
             $id_user = Auth::user()->id;
             $id_Accion = 5; //Búsqueda
@@ -74,7 +76,8 @@ class DependenciasController extends Controller
     public function create()
     {
         $genero = Genero::pluck('valor', 'id')->all();
-        return view('dependencias.create',compact('genero'));
+        $servicios = Servicios::get();
+        return view('dependencias.create',compact('genero', 'servicios'));
     }
 
     /**
@@ -85,9 +88,11 @@ class DependenciasController extends Controller
      */
     public function store(Request $request)
     {
-
+        //dd($request);die;
         $person = new Person();
         $dependencia = new Dependencias();
+        $dependencias_servicios = new Dependencias_Servicios();
+        $servicios = new Servicios();
 
         $cedula = $request['cedula'];
         $obtener_persona = $person->where('cedula','=',$cedula)->get();
@@ -100,12 +105,26 @@ class DependenciasController extends Controller
             $dependencia->Organismo = $request->organismo;
             $dependencia->id_person = $obtener_persona[0]['id'];
             $dependencia->save();
+            $id_dependencia = $dependencia->id;
+
+            $i = 0;
+            $nombre_servicio = null;
+            while($i<count($request->id_servicios))
+            {
+                $dependencias_servicios->id_dependencias = $id_dependencia;
+                $dependencias_servicios->id_servicios = $request->id_servicios[$i];
+                $dependencias_servicios->save();
+
+                $nombre = $servicios->where('id', $request->id_servicios[$i])->get();
+                $nombre_servicio .= $nombre[0]['nombre'].', ';
+
+                $i++;
+            }
 
             $persona = $person->Find($obtener_persona[0]['id'], ['id']);
             $persona->update($request->all('telefono', 'correo'));
 
             $generos = Genero::get();
-
             $genero_for = $generos->Where('id', $obtener_persona[0]['id_genero']);
             foreach($genero_for as $genero){
                 $genero = $genero['valor'];
@@ -118,7 +137,7 @@ class DependenciasController extends Controller
             'Datos del Representante: '.$obtener_persona[0]['letra_cedula'].$obtener_persona[0]['cedula'].
             ' || '.$obtener_persona[0]['primer_nombre'].', '.$obtener_persona[0]['segundo_nombre'].' || '.
             $obtener_persona[0]['primer_apellido'].', '.$obtener_persona[0]['segundo_apellido'].' || '.
-            $genero.' || '.$obtener_persona[0]['telefono'].' || '.$obtener_persona[0]['correo_electronico']]);
+            $genero.' || '.$obtener_persona[0]['telefono'].' || '.$obtener_persona[0]['correo_electronico'].' || Servicios a Consumir: '.$nombre_servicio]);
 
             Alert()->success('Dependencia Creada Satisfactoriamente');
             return redirect()->route('dependencias.index');
@@ -143,6 +162,21 @@ class DependenciasController extends Controller
             $dependencia->Organismo = $request->organismo;
             $dependencia->id_person = $id_person;
             $dependencia->save();
+            $id_dependencia = $dependencia->id;
+
+            $i = 0;
+            $nombre_servicio = null;
+            while($i<count($request->id_servicios))
+            {
+                $dependencias_servicios->id_dependencias = $id_dependencia;
+                $dependencias_servicios->id_servicios = $request->id_servicios[$i];
+                $dependencias_servicios->save();
+
+                $nombre = $servicios->where('id', $request->id_servicios[$i])->get();
+                $nombre_servicio .= $nombre[0]['nombre'].', ';
+
+                $i++;
+            }
 
             $generos = Genero::get();
 
@@ -157,7 +191,7 @@ class DependenciasController extends Controller
             'valores_modificados' => 'Datos de la Dependencia: '.$request->organismo.', '.$request->dependencia.', Adscrito al: '.$request->ministerio.
             '|| Datos del Representante: '.$request->letra_cedula.$request->cedula.
             ' || '.$request->primer_nombre.' || '.$request->segundo_nombre.' || '.$request->primer_apellido.' || '.
-            $request->segundo_apellido.' || '.$genero.' || '.$request->telefono.' || '.$request->correo]);
+            $request->segundo_apellido.' || '.$genero.' || '.$request->telefono.' || '.$request->correo.' || Servicios a Consumir: '.$nombre_servicio]);
 
             Alert()->success('Dependencia Creada Satisfactoriamente');
             return redirect()->route('dependencias.index');
@@ -185,7 +219,13 @@ class DependenciasController extends Controller
     public function edit(Dependencias $dependencia)
     {
         $genero = Genero::pluck('valor', 'id')->all();
-        return view('dependencias.edit', compact('dependencia', 'genero'));
+        $servicios = Servicios::get();
+        $dependencias_servicios = Dependencias_Servicios::join('servicios', 'servicios.id', '=', 'dependencias_servicios.id_servicios')
+        ->where('dependencias_servicios.id_dependencias', $dependencia->id)
+        ->pluck('servicios.nombre', 'servicios.id')->all();
+        //$dependencias_servicios = Dependencias_Servicios::all*()
+        // dd($dependencias_servicios);die;
+        return view('dependencias.edit', compact('dependencia', 'genero', 'servicios', 'dependencias_servicios'));
     }
 
     /**
@@ -204,8 +244,8 @@ class DependenciasController extends Controller
             'Ministerio' => $request->ministerio
             ]);
 
-        $id = $dependencias->Where('id', $id)->select('id_person')->get();
-        $id_person = $id[0]['id_person'];
+        $idPerson = $dependencias->Where('id', $id)->select('id_person')->get();
+        $id_person = $idPerson[0]['id_person'];
 
         $personas = Person::Find($id_person);
         $personas->update([
@@ -220,6 +260,30 @@ class DependenciasController extends Controller
             'correo_electronico' => $request->correo
             ]);
 
+        $dependencias_servicios = new Dependencias_Servicios();
+        $validacion_dependencias_servicios = $dependencias_servicios->where('id_dependencias', $id)->exists();
+        if($validacion_dependencias_servicios == true)
+        {
+            $servicios_dependencia = $dependencias_servicios->where('id_dependencias', $id);
+            $servicios_dependencia->delete();  
+        }
+
+        $i = 0;
+        $nombre_servicio = null;
+        while($i<count($request->id_servicios))
+        {
+            $dependencias_servicios = new Dependencias_Servicios();
+            $dependencias_servicios->id_dependencias = $id;
+            $dependencias_servicios->id_servicios = $request->id_servicios[$i];
+            $dependencias_servicios->save();
+
+            $servicios = new Servicios();
+            $nombre = $servicios->where('id', $request->id_servicios[$i])->get();
+            $nombre_servicio .= $nombre[0]['nombre'].', ';
+
+            $i++;
+        };
+
         $generos = Genero::get();
         $genero_for = $generos->Where('id', $request->id_genero);
         foreach($genero_for as $genero){
@@ -232,7 +296,7 @@ class DependenciasController extends Controller
         'valores_modificados' => 'Datos de la Dependencia: '.$request->organismo.', '.$request->dependencia.', Adscrito al: '.$request->ministerio.
         '|| Datos del Representante: '.$request->letra_cedula.$request->cedula.' || '.
         $request->primer_nombre.', '.$request->segundo_nombre.' || '.$request->primer_apellido.', '.
-        $request->segundo_apellido.' || '.$genero.' || '.$request->fecha_nacimiento.' || '.$request->telefono.' || '.$request->correo]);
+        $request->segundo_apellido.' || '.$genero.' || '.$request->fecha_nacimiento.' || '.$request->telefono.' || '.$request->correo.' || Servicios a Consumir: '.$nombre_servicio]);
     
         Alert()->success('Dependencia Actualizada Satisfactoriamente');
         return redirect()->route('dependencias.index');

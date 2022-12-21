@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('trazas.partials.header')
 @section('content')
 <section class="section">
     <div class="section-header">
@@ -60,6 +60,21 @@
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
                                 <center><a class="btn btn-primary" href="{{ route('traza_tokens.index') }}"><i class='fa fa-key'> Tokens</i></a></center>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <center><a class="btn btn-primary" href="{{ route('traza_servicios.index') }}"><i class='fa fa-server'> Servicios</i></a></center>
                                 <hr>
                             </div>
                         </div>
@@ -135,6 +150,21 @@
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
                                 <center><a class="btn btn-primary" href="{{ route('traza_roles.index') }}"><i class='fa fa-lock'> Roles</i></a></center>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <center><a class="btn btn-primary" href="{{ route('traza_user_siipol.index') }}"><i class='fas fa-user-plus'> Usuarios SIIPOL</i></a></center>
                                 <hr>
                             </div>
                         </div>

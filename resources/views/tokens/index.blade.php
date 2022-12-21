@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('tokens.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -10,7 +10,7 @@
                 <div class="col-lg-12" style="position:relative;z-index:1000">
                     <div class="card">
                         <div class="card-body">
-                                {!! Form::open(array('route' => 'dependencias.index','method' => 'GET')) !!}
+                                {!! Form::open(array('route' => 'tokens.index','method' => 'GET')) !!}
                                 <div class="row">
                                     <div class="col-xs-4 col-sm-4 col-md-4">
                                         <div class="form-group">
@@ -21,7 +21,7 @@
                                     </div>
                                     <div class="col-xs-3 col-sm-3 col-md-3">
                                         <div class="form-group">
-                                            {!! Form::text('buscador', null, array('class' => 'form-control', 'onkeyup'=>'mayus(this);')) !!}
+                                            {!! Form::text('buscador', null, array('class' => 'form-control')) !!}
                                         </div>
                                     </div>
                                     <div class="col-xs-3 col-sm-3 col-md-3">
@@ -37,7 +37,7 @@
                                         <table class="table table-striped mt-2 display dataTable table-hover">
                                             <thead>
                                                 <tr role="row">
-                                                    <th>Organismo</th>
+                                                    <th>Dependencia</th>
                                                     <th>Fecha de Generación</th>
                                                     <th>Fecha de Expiración</th>
                                                     <th>Último vez usado</th>

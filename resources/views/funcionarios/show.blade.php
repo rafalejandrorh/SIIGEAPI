@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('funcionarios.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -79,12 +79,6 @@
                                 <div class="form-group">
                                     <label for="email">Fecha de Nacimiento</label>
                                     {!! Form::date('fecha_nacimiento', $funcionario->person->fecha_nacimiento, ['class'=>'form-control datepicker','autocomplete' => 'off', 'readonly']) !!}
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-3">
-                                <div class="form-group">
-                                    <label for="email">Estado de Nacimiento</label>
-                                    {!! Form::text('id_estado_nacimiento', $funcionario->person->estado_nacimiento->valor, array('class' => 'form-control', 'readonly')) !!}
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-3">

@@ -73,54 +73,61 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $users = User::Where('users', '=', $request->users)->get();
-        $id_user = $users[0]['id'];
-        $password = $users[0]['password'];
-
-        $validacion_password = Hash::check(request('password'), $password);
-        if($validacion_password == true)
+        $validacion_user = User::Where('users', $request->users)->exists();
+        if($validacion_user == true)
         {
-            $validar_question = Users_Questions::where('id_users', '=', $id_user)->exists();
+            $users = User::Where('users', '=', $request->users)->get();
+            $id_user = $users[0]['id'];
+            $password = $users[0]['password'];
 
-            if($validar_question == true)
+            $validacion_password = Hash::check(request('password'), $password);
+            if($validacion_password == true)
             {
+                $validar_question = Users_Questions::where('id_users', '=', $id_user)->exists();
 
-                $this->validateLogin($request);
+                if($validar_question == true)
+                {
 
-                // If the class is using the ThrottlesLogins trait, we can automatically throttle
-                // the login attempts for this application. We'll key this by the username and
-                // the IP address of the client making these requests into this application.
-                if (method_exists($this, 'hasTooManyLoginAttempts') &&
-                    $this->hasTooManyLoginAttempts($request)) {
-                    $this->fireLockoutEvent($request);
-    
-                    return $this->sendLockoutResponse($request);
-                }
-    
-                if ($this->attemptLogin($request)) {
-                    if ($request->hasSession()) {
-                        $request->session()->put('auth.password_confirmed_at', time());
-                    }
+                    $this->validateLogin($request);
 
-                    return $this->sendLoginResponse($request, $id_user);
-                }
-    
-                // If the login attempt was unsuccessful we will increment the number of attempts
-                // to login and redirect the user back to the login form. Of course, when this
-                // user surpasses their maximum number of attempts they will get locked out.
-                $this->incrementLoginAttempts($request);
-    
-                return $this->sendFailedLoginResponse($request);
-            }else{
-                $questions = new Questions();
-                $question1 = $questions->Where('id_padre', 10000)->pluck('question', 'id')->all();
-                $question2 = $questions->Where('id_padre', 20000)->pluck('question', 'id')->all();
-                $question3 = $questions->Where('id_padre', 30000)->pluck('question', 'id')->all();
+                    // If the class is using the ThrottlesLogins trait, we can automatically throttle
+                    // the login attempts for this application. We'll key this by the username and
+                    // the IP address of the client making these requests into this application.
+                    if (method_exists($this, 'hasTooManyLoginAttempts') &&
+                        $this->hasTooManyLoginAttempts($request)) {
+                        $this->fireLockoutEvent($request);
         
-                return view('auth.create_login_questions', compact('id_user', 'question1', 'question2', 'question3'));
+                        return $this->sendLockoutResponse($request);
+                    }
+        
+                    if ($this->attemptLogin($request)) {
+                        if ($request->hasSession()) {
+                            $request->session()->put('auth.password_confirmed_at', time());
+                        }
+
+                        return $this->sendLoginResponse($request, $id_user);
+                    }
+        
+                    // If the login attempt was unsuccessful we will increment the number of attempts
+                    // to login and redirect the user back to the login form. Of course, when this
+                    // user surpasses their maximum number of attempts they will get locked out.
+                    $this->incrementLoginAttempts($request);
+        
+                    return $this->sendFailedLoginResponse($request);
+                }else{
+                    $questions = new Questions();
+                    $question1 = $questions->Where('id_padre', 10000)->pluck('question', 'id')->all();
+                    $question2 = $questions->Where('id_padre', 20000)->pluck('question', 'id')->all();
+                    $question3 = $questions->Where('id_padre', 30000)->pluck('question', 'id')->all();
+            
+                    return view('auth.create_login_questions', compact('id_user', 'question1', 'question2', 'question3'));
+                }
+            }else{
+                Alert()->warning('Contraseña Incorrecta');
+                return back();
             }
         }else{
-            Alert()->warning('Contraseña Incorrecta');
+            Alert()->warning('Usuario Incorrecto');
             return back();
         }
     }
@@ -197,9 +204,7 @@ class LoginController extends Controller
         }else if($request->id == 3){
             Alert()->warning('Se ha bloqueado tu Usuario', 'Respuesta Incorrecta a tu pregunta de Seguridad');
         }
-        return $request->wantsJson()
-            ? new JsonResponse([], 204)
-            : redirect('/');
+        return $request->wantsJson() ? new JsonResponse([], 204) : redirect('/');
     }
 
 }

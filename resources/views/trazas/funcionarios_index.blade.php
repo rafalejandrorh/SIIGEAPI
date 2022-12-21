@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('trazas.partials.header')
 @section('content')
     <section class="section">
         <div class="section-header">
@@ -54,7 +54,7 @@
                                                 <th>Usuario</th>
                                                 <th>Acción</th>
                                                 <th>Fecha</th>
-                                                <th>Opciones</th>
+                                                <th>Acciones</th>
                                         </thead>
                                         <tbody>
                                             @foreach ($funcionario as $policia)
